@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dictator</title>
+  <script>
+    (() => {
+      const raw = localStorage.getItem('dictator_settings');
+      const legacy = localStorage.getItem('dictator_theme');
+      let theme = 'system';
+      try { theme = raw ? JSON.parse(raw).theme || theme : legacy || theme; } catch {}
+      const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    })();
+  </script>
+  <link rel="stylesheet" href="css/styles.css?v=2">
+  <!-- GA4: replace G-XXXXXXXXXX and enable only after consent/privacy review. -->
+</head>
+<body>
+  <header class="app-header">
+    <button class="icon-button" id="menu-toggle" aria-label="Open navigation menu">☰</button>
+    <button class="logo" id="home-link" aria-label="Go to Home">DICTATOR</button>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <button data-header-route="">Home</button>
+      <button data-header-route="projects">Projects</button>
+      <button data-header-route="about">About</button>
+      <button data-header-route="how-to-use">Help</button>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="settings-toggle" aria-label="Open settings">⚙</button>
+      <button class="icon-button" id="theme-toggle" aria-label="Toggle theme">☾</button>
+    </div>
+  </header>
+
+  <div id="global-ad" class="ad-container" aria-label="Advertisement" role="complementary">
+    <span class="ad-label">Advertisement</span>
+    <!-- Insert asynchronous ad provider code inside this reserved slot. -->
+  </div>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="side-panel side-panel-left" id="page-menu" aria-label="Page navigation" aria-hidden="true"></aside>
+  <aside class="side-panel side-panel-right" id="settings-panel" aria-label="Settings" aria-hidden="true"></aside>
+
+  <main id="app" class="app-main"></main>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  <div id="modal-region"></div>
+
+  <script src="js/db.js?v=14"></script>
+  <script src="js/parser.js?v=19"></script>
+  <script src="js/tts.js?v=18"></script>
+  <script src="js/ui.js?v=25"></script>
+  <script src="js/router.js?v=14"></script>
+  <script src="js/app.js?v=16"></script>
+  <script src="js/voice-lab.js?v=10"></script>
+</body>
+</html>
