@@ -441,9 +441,27 @@ Mira fece un respiro, poi un altro. "Va bene", disse. "Scopriamo cosa ricorda l'
   function bindHome(editingProject = null) {
     const input = document.querySelector('#text-input'); const counter = document.querySelector('#counter'); const start = document.querySelector('#start'); const box = document.querySelector('#input-box'); const source = { type:'paste', name:null };
     activeInputSource = source;
+    let draftWriteTimer = null;
+    let saveInFlight = false;
     input.removeAttribute('maxlength');
     try { const draft = JSON.parse(localStorage.getItem('dictator_draft') || 'null'); if (draft?.content && (!editingProject || draft.editingProjectId === editingProject.id)) input.value = draft.content; else if (editingProject) input.value = editingProject.rawText; } catch { if (editingProject) input.value = editingProject.rawText; }
-    const update = () => { const count = countText(input, counter, start); localStorage.setItem('dictator_draft', JSON.stringify({ content: input.value, timestamp: Date.now(), source: source.type, editingProjectId: editingProject?.id || null })); return count; };
+    const update = () => {
+      const count = countText(input, counter, start);
+      if (draftWriteTimer) clearTimeout(draftWriteTimer);
+      draftWriteTimer = setTimeout(() => {
+        try {
+          localStorage.setItem('dictator_draft', JSON.stringify({
+            content: input.value,
+            timestamp: Date.now(),
+            source: source.type,
+            editingProjectId: editingProject?.id || null
+          }));
+        } catch (error) {
+          console.warn('Draft save skipped because the browser storage is full or blocked.', error);
+        }
+      }, 250);
+      return count;
+    };
     input.addEventListener('input', update); update();
     document.querySelector('#view-projects').onclick = () => Router.navigate('projects');
     document.querySelectorAll('[data-open]').forEach(node => node.onclick = () => Router.navigate(`project/${node.dataset.open}`));
@@ -454,7 +472,34 @@ Mira fece un respiro, poi un altro. "Va bene", disse. "Scopriamo cosa ricorda l'
     fileZone.addEventListener('dragover', event => { event.preventDefault(); fileZone.classList.add('dragging'); });
     fileZone.addEventListener('dragleave', () => fileZone.classList.remove('dragging'));
     fileZone.addEventListener('drop', event => { event.preventDefault(); fileZone.classList.remove('dragging'); loadFile(event.dataTransfer.files[0], input, source); });
-    start.onclick = async () => { const tokens = tokenize(input.value); if (!tokens.length || tokens.length > MAX_WORDS) return; const value = settings(); const language = value.defaultDictationLang === 'auto' ? await detectLanguage(input.value) : value.defaultDictationLang; const structure = detectStructure(input.value.split(/\r?\n/)); const updates = { rawText:input.value, wordCount:tokens.length, structure, tokens, groups:createGroups(tokens, editingProject?.config.wordsPerGroup || Number(value.defaultWordsPerGroup), structure), sourceType:source.type, sourceName:source.name || editingProject?.sourceName || null, image: currentProjectImageData || null, progress:{ currentGroupIndex:0, currentRepeat:1, isPlaying:false, lastWordSpoken:'' } }; try { const project = editingProject ? await updateProject(editingProject.id, updates) : await createProject({ name:tokens.slice(0, 6).join(' '), nameLower:tokens.slice(0, 6).join(' ').toLowerCase(), ...updates, config:{ wordsPerGroup:Number(value.defaultWordsPerGroup), repetitions:Number(value.defaultRepetitions), speed:Number(value.defaultSpeed), pauseDuration:Number(value.defaultPauseDuration) || .8, language, theme:document.documentElement.dataset.theme } }); localStorage.removeItem('dictator_draft'); clearProjectImageSelection(); toast(editingProject ? t('project.saved','Project updated.') : t('project.created','Project created.'), 'success'); Router.navigate(`project/${project.id}`); } catch (error) { toast(error.message === 'STORAGE_FULL' ? t('project.storageFull','Storage full (20/20 projects).') : t('project.loadFail','Could not save project.'), 'danger'); } };
+    start.onclick = async () => {
+      if (saveInFlight) return;
+      const tokens = tokenize(input.value);
+      if (!tokens.length || tokens.length > MAX_WORDS) return;
+      saveInFlight = true;
+      start.disabled = true;
+      start.dataset.busy = 'true';
+      const originalLabel = start.innerHTML;
+      start.innerHTML = `${editingProject ? t('home.save','Save changes') : t('home.start','Start to dictate')} <span>…</span>`;
+      try {
+        const value = settings();
+        const language = value.defaultDictationLang === 'auto' ? await detectLanguage(input.value) : value.defaultDictationLang;
+        const structure = detectStructure(input.value.split(/\r?\n/));
+        const updates = { rawText:input.value, wordCount:tokens.length, structure, tokens, groups:createGroups(tokens, editingProject?.config.wordsPerGroup || Number(value.defaultWordsPerGroup), structure), sourceType:source.type, sourceName:source.name || editingProject?.sourceName || null, image: currentProjectImageData || null, progress:{ currentGroupIndex:0, currentRepeat:1, isPlaying:false, lastWordSpoken:'' } };
+        const project = editingProject ? await updateProject(editingProject.id, updates) : await createProject({ name:tokens.slice(0, 6).join(' '), nameLower:tokens.slice(0, 6).join(' ').toLowerCase(), ...updates, config:{ wordsPerGroup:Number(value.defaultWordsPerGroup), repetitions:Number(value.defaultRepetitions), speed:Number(value.defaultSpeed), pauseDuration:Number(value.defaultPauseDuration) || .8, language, theme:document.documentElement.dataset.theme } });
+        localStorage.removeItem('dictator_draft');
+        clearProjectImageSelection();
+        toast(editingProject ? t('project.saved','Project updated.') : t('project.created','Project created.'), 'success');
+        Router.navigate(`project/${project.id}`);
+      } catch (error) {
+        toast(error.message === 'STORAGE_FULL' ? t('project.storageFull','Storage full (20/20 projects).') : t('project.loadFail','Could not save project.'), 'danger');
+      } finally {
+        saveInFlight = false;
+        start.disabled = false;
+        start.dataset.busy = 'false';
+        start.innerHTML = originalLabel;
+      }
+    };
   }
   function projectMeta(project) { const progress = project.groups.length ? Math.round((project.progress.currentGroupIndex / project.groups.length) * 100) : 0; return `${t('reader.group','Group')} ${Math.min(project.progress.currentGroupIndex + 1, project.groups.length)} of ${project.groups.length} · ${progress}% complete · Updated ${new Date(project.updatedAt).toLocaleDateString()}`; }
   async function renderProjects() { const projects = await listProjects(); const demo = demoProject(); app().innerHTML = `<div class="page projects-page"><div class="page-heading"><div><div class="eyebrow">${t('project.yourLibrary','Your library')}</div><h1>${t('project.title','Your projects.')}</h1><p>${t('project.subtitle','Manage your listening sessions. Maximum 20 projects.')}</p></div><button class="button" id="new-project">${t('project.new','+ New project')}</button></div><div class="project-list"><article class="project-card demo-project-card"><div class="project-info"><h3>${safe(demo.name)}</h3><p>${formatText('project.demoInfo', { count: demo.groups.length })}</p></div><div class="card-actions"><button class="button primary" data-open="${demo.id}">${t('project.openDemo','Open demo')}</button></div></article>${projects.length ? projects.map(project => `<article class="project-card"><div class="project-info"><h3>${safe(project.name)}</h3>${project.image ? `<img class="project-image-thumb" src="${safe(project.image)}" alt="Project preview" />` : ''}<p>${projectMeta(project)}${project.sourceName ? ` · ${safe(project.sourceName)}` : ''}</p></div><div class="card-actions"><button class="button primary" data-open="${safe(project.id)}">${t('project.open','Open')}</button><button class="button" data-rename="${safe(project.id)}">${t('project.rename','Rename')}</button><button class="button danger" data-delete="${safe(project.id)}">${t('project.delete','Delete')}</button></div></article>`).join('') : `<div class="empty-state"><h2>${t('project.emptyTitle','No projects yet.')}</h2><p>${t('project.emptyText','Start with a note from the Home page.')}</p><button class="button primary" id="empty-home">${t('project.emptyAction','Create your first project')}</button></div>`}</div><div class="storage"><p>${formatText('project.storageUsed', { count: projects.length })}</p><div class="progress"><span style="width:${projects.length / 20 * 100}%"></span></div></div></div>`;
