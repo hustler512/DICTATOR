@@ -1,5 +1,53 @@
 const DB_CONFIG = { name: 'DictatorDB', version: 2, store: 'projects', voices: 'voiceModels' };
 let dbPromise;
+
+function normalizeProject(project) {
+  const rawText = String(project?.rawText || '');
+  const tokens = Array.isArray(project?.tokens) && project.tokens.length ? project.tokens : tokenize(rawText);
+  const structure = Array.isArray(project?.structure) && project.structure.length ? project.structure : detectStructure(rawText.split(/\r?\n/));
+  const config = project?.config || {};
+  const wordsPerGroup = Math.max(1, Number(config.wordsPerGroup) || 6);
+  const groups = Array.isArray(project?.groups) && project.groups.length ? project.groups : createGroups(tokens, wordsPerGroup, structure);
+  return {
+    ...project,
+    rawText,
+    wordCount: Number(project?.wordCount) || tokens.length,
+    tokens,
+    structure,
+    groups,
+    config: {
+      wordsPerGroup,
+      repetitions: Number(config.repetitions) || 2,
+      speed: Number(config.speed) || .9,
+      pauseDuration: Number(config.pauseDuration) || .8,
+      language: config.language || 'en',
+      ...config,
+      wordsPerGroup,
+      repetitions: Number(config.repetitions) || 2,
+      speed: Number(config.speed) || .9,
+      pauseDuration: Number(config.pauseDuration) || .8,
+      language: config.language || 'en'
+    }
+  };
+}
+
+function compactProject(project) {
+  const compact = { ...project };
+  delete compact.tokens;
+  delete compact.groups;
+  delete compact.structure;
+  delete compact.wordCount;
+  if (compact.progress) {
+    compact.progress = {
+      currentGroupIndex: Number(compact.progress.currentGroupIndex) || 0,
+      currentRepeat: Number(compact.progress.currentRepeat) || 1,
+      isPlaying: Boolean(compact.progress.isPlaying),
+      lastWordSpoken: String(compact.progress.lastWordSpoken || '')
+    };
+  }
+  return compact;
+}
+
 function openDB() {
   if (dbPromise) return dbPromise;
   dbPromise = new Promise((resolve, reject) => {
@@ -23,17 +71,31 @@ function transactionPromise(transaction) { return new Promise((resolve, reject) 
 async function createProject(projectData) {
   const db = await openDB(); const transaction = db.transaction(DB_CONFIG.store, 'readwrite'); const store = transaction.objectStore(DB_CONFIG.store);
   const count = await requestPromise(store.count()); if (count >= 20) throw new Error('STORAGE_FULL');
-  const now = Date.now(); const project = { id: crypto.randomUUID(), ...projectData, createdAt: now, updatedAt: now };
-  store.add(project); await transactionPromise(transaction); return project;
+  const now = Date.now();
+  const project = normalizeProject({ id: crypto.randomUUID(), ...projectData, createdAt: now, updatedAt: now });
+  store.add(compactProject(project));
+  await transactionPromise(transaction);
+  return project;
 }
-async function getProject(id) { const db = await openDB(); return requestPromise(db.transaction(DB_CONFIG.store).objectStore(DB_CONFIG.store).get(id)); }
+async function getProject(id) {
+  const db = await openDB();
+  const project = await requestPromise(db.transaction(DB_CONFIG.store).objectStore(DB_CONFIG.store).get(id));
+  return project ? normalizeProject(project) : null;
+}
 async function updateProject(id, updates) {
   const existing = await getProject(id); if (!existing) throw new Error('PROJECT_NOT_FOUND');
-  const db = await openDB(); const transaction = db.transaction(DB_CONFIG.store, 'readwrite'); const updated = { ...existing, ...updates, updatedAt: Date.now() };
-  transaction.objectStore(DB_CONFIG.store).put(updated); await transactionPromise(transaction); return updated;
+  const db = await openDB(); const transaction = db.transaction(DB_CONFIG.store, 'readwrite');
+  const updated = normalizeProject({ ...existing, ...updates, updatedAt: Date.now() });
+  transaction.objectStore(DB_CONFIG.store).put(compactProject(updated));
+  await transactionPromise(transaction);
+  return updated;
 }
 async function deleteProject(id) { const db = await openDB(); const transaction = db.transaction(DB_CONFIG.store, 'readwrite'); transaction.objectStore(DB_CONFIG.store).delete(id); await transactionPromise(transaction); }
-async function listProjects(limit = 20) { const db = await openDB(); const values = await requestPromise(db.transaction(DB_CONFIG.store).objectStore(DB_CONFIG.store).getAll()); return values.sort((a,b) => b.updatedAt - a.updatedAt).slice(0, limit); }
+async function listProjects(limit = 20) {
+  const db = await openDB();
+  const values = await requestPromise(db.transaction(DB_CONFIG.store).objectStore(DB_CONFIG.store).getAll());
+  return values.map(normalizeProject).sort((a,b) => b.updatedAt - a.updatedAt).slice(0, limit);
+}
 async function getProjectCount() { const db = await openDB(); return requestPromise(db.transaction(DB_CONFIG.store).objectStore(DB_CONFIG.store).count()); }
 async function getVoiceModel(key) { const db = await openDB(); return requestPromise(db.transaction(DB_CONFIG.voices).objectStore(DB_CONFIG.voices).get(key)); }
 async function saveVoiceModel(model) { const db = await openDB(); const transaction = db.transaction(DB_CONFIG.voices, 'readwrite'); transaction.objectStore(DB_CONFIG.voices).put(model); await transactionPromise(transaction); return model; }

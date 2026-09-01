@@ -227,6 +227,11 @@ window.UI = (() => {
 
   let currentProjectImageData = null;
   let activeInputSource = { type:'paste', name:null };
+  function clearProjectImageSelection() {
+    currentProjectImageData = null;
+    const preview = document.querySelector('.project-image-preview');
+    if (preview) preview.remove();
+  }
   function demoProject() {
     const demoText = {
       en: `# The Clockmaker's Last Light
@@ -443,10 +448,16 @@ Mira fece un respiro, poi un altro. "Va bene", disse. "Scopriamo cosa ricorda l'
     activeInputSource = source;
     let draftWriteTimer = null;
     let saveInFlight = false;
+    const draftLimit = 200000;
     input.removeAttribute('maxlength');
     try { const draft = JSON.parse(localStorage.getItem('dictator_draft') || 'null'); if (draft?.content && (!editingProject || draft.editingProjectId === editingProject.id)) input.value = draft.content; else if (editingProject) input.value = editingProject.rawText; } catch { if (editingProject) input.value = editingProject.rawText; }
     const update = () => {
       const count = countText(input, counter, start);
+      if (input.value.length > draftLimit) {
+        if (draftWriteTimer) clearTimeout(draftWriteTimer);
+        try { localStorage.removeItem('dictator_draft'); } catch {}
+        return count;
+      }
       if (draftWriteTimer) clearTimeout(draftWriteTimer);
       draftWriteTimer = setTimeout(() => {
         try {
@@ -484,9 +495,30 @@ Mira fece un respiro, poi un altro. "Va bene", disse. "Scopriamo cosa ricorda l'
       try {
         const value = settings();
         const language = value.defaultDictationLang === 'auto' ? await detectLanguage(input.value) : value.defaultDictationLang;
-        const structure = detectStructure(input.value.split(/\r?\n/));
-        const updates = { rawText:input.value, wordCount:tokens.length, structure, tokens, groups:createGroups(tokens, editingProject?.config.wordsPerGroup || Number(value.defaultWordsPerGroup), structure), sourceType:source.type, sourceName:source.name || editingProject?.sourceName || null, image: currentProjectImageData || null, progress:{ currentGroupIndex:0, currentRepeat:1, isPlaying:false, lastWordSpoken:'' } };
-        const project = editingProject ? await updateProject(editingProject.id, updates) : await createProject({ name:tokens.slice(0, 6).join(' '), nameLower:tokens.slice(0, 6).join(' ').toLowerCase(), ...updates, config:{ wordsPerGroup:Number(value.defaultWordsPerGroup), repetitions:Number(value.defaultRepetitions), speed:Number(value.defaultSpeed), pauseDuration:Number(value.defaultPauseDuration) || .8, language, theme:document.documentElement.dataset.theme } });
+        const baseProject = {
+          rawText: input.value,
+          wordCount: tokens.length,
+          sourceType: source.type,
+          sourceName: source.name || editingProject?.sourceName || null,
+          image: currentProjectImageData || null,
+          progress: { currentGroupIndex: 0, currentRepeat: 1, isPlaying: false, lastWordSpoken: '' }
+        };
+        const payload = {
+          ...baseProject,
+          config: {
+            wordsPerGroup: Number(editingProject?.config.wordsPerGroup || value.defaultWordsPerGroup),
+            repetitions: Number(value.defaultRepetitions),
+            speed: Number(value.defaultSpeed),
+            pauseDuration: Number(value.defaultPauseDuration) || .8,
+            language,
+            theme: document.documentElement.dataset.theme
+          }
+        };
+        const project = editingProject ? await updateProject(editingProject.id, payload) : await createProject({
+          name: tokens.slice(0, 6).join(' '),
+          nameLower: tokens.slice(0, 6).join(' ').toLowerCase(),
+          ...payload
+        });
         localStorage.removeItem('dictator_draft');
         clearProjectImageSelection();
         toast(editingProject ? t('project.saved','Project updated.') : t('project.created','Project created.'), 'success');
