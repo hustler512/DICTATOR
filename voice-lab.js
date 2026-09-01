@@ -104,7 +104,7 @@
   if ('speechSynthesis' in window) speechSynthesis.addEventListener('voiceschanged', () => { render(); renderFooter(); });
   render();
   setTimeout(render, 250);
-  addEventListener('hashchange', () => setTimeout(renderFooter, 0));
+  addEventListener('popstate', () => setTimeout(renderFooter, 0));
   setTimeout(renderFooter, 300);
   new MutationObserver(renderFooter).observe(document.querySelector('#app'), { childList:true, subtree:true });
   new MutationObserver(removeUnsupportedLanguageOptions).observe(document.body, { childList:true, subtree:true });

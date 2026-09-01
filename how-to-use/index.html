@@ -7,8 +7,8 @@
   <meta name="description" content="Learn how to paste notes, upload PDFs or DOCX files, and use Dictator to listen to study material, repeat ideas, and learn more efficiently.">
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      const target = '../#/how-to-use';
-      if (window.location.hash !== '#/how-to-use') {
+      const target = '/how-to-use';
+      if (window.location.pathname !== target) {
         window.location.replace(target);
       }
     });
@@ -29,7 +29,7 @@
         <li>Create a listening session with your preferred group size and speed.</li>
         <li>Listen, repeat, and revise key ideas.</li>
       </ol>
-      <p><a href="../#/how-to-use">Open the app help page</a></p>
+      <p><a href="/how-to-use">Open the app help page</a></p>
     </div>
   </div>
 </body>

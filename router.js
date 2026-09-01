@@ -38,7 +38,10 @@ const ROUTE_META = {
 };
 
 window.Router = (() => {
-  function path() { return location.hash.replace(/^#\/?/, '') || ''; }
+  function path() {
+    const raw = location.pathname.replace(/^\/+|\/+$/g, '');
+    return raw;
+  }
   function setMetaTag(name, value, attribute = 'name') {
     let tag = document.head.querySelector(`meta[${attribute}="${name}"]`);
     if (!tag) {
@@ -68,7 +71,12 @@ window.Router = (() => {
     ogUrl.setAttribute('content', `${location.origin}${meta.canonicalPath}`);
     if (!ogUrl.parentNode) document.head.appendChild(ogUrl);
   }
-  function navigate(value) { location.hash = `#/${value.replace(/^\//, '')}`; }
+  function navigate(value) {
+    const clean = String(value || '').replace(/^\/+/, '').replace(/\/+$/, '');
+    const target = clean ? `/${clean}` : '/';
+    if (location.pathname !== target) history.pushState({}, '', target);
+    handle();
+  }
   async function handle() {
     const parts = path().split('/');
     const routeKey = parts[0] || '';
@@ -84,6 +92,6 @@ window.Router = (() => {
     navigate('');
     ROUTER_UI.toast('Page not found.', 'danger');
   }
-  function init() { addEventListener('hashchange', handle); handle(); }
+  function init() { addEventListener('popstate', handle); handle(); }
   return { navigate, init, handle, updateMeta };
 })();

@@ -7,8 +7,8 @@
   <meta name="description" content="Manage your saved Dictator listening sessions, projects, and study notes in your browser.">
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      const target = '../#/projects';
-      if (window.location.hash !== '#/projects') {
+      const target = '/projects';
+      if (window.location.pathname !== target) {
         window.location.replace(target);
       }
     });
@@ -25,7 +25,7 @@
     <div class="card">
       <h1>Projects</h1>
       <p>Open the app project library to view saved sessions and continue listening to your notes.</p>
-      <p><a href="../#/projects">Open the app projects page</a></p>
+      <p><a href="/projects">Open the app projects page</a></p>
     </div>
   </div>
 </body>
