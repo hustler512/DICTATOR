@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dictator | Privacy</title>
+  <meta name="description" content="Dictator keeps user notes on-device and uses browser processing so your study material stays private while you listen and learn.">
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const target = '../#/privacy';
+      if (window.location.hash !== '#/privacy') {
+        window.location.replace(target);
+      }
+    });
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0f1720; color:#e8eef5; margin:0; padding:40px 20px; }
+    .wrap { max-width:760px; margin:0 auto; }
+    .card { background:#111d29; border:1px solid #203241; border-radius:16px; padding:28px; }
+    a { color:#72d5f4; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Privacy</h1>
+      <p>Dictator is designed to keep notes and uploaded content on your device. It uses browser-based processing and local storage for projects and settings.</p>
+      <p><a href="../#/privacy">Open the app privacy page</a></p>
+    </div>
+  </div>
+</body>
+</html>

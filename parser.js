@@ -1,3 +1,10 @@
+function splitIntoParagraphs(text) {
+  return String(text || '')
+    .replace(/\r\n/g, '\n')
+    .split(/\n\s*\n+/)
+    .map(part => part.trim())
+    .filter(Boolean);
+}
 function tokenize(text) { return text.trim().split(/\s+/).filter(Boolean); }
 function detectStructure(lines) {
   const markers = []; let tokenIndex = 0;

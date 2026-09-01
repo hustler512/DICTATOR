@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dictator | About</title>
+  <meta name="description" content="Learn how Dictator helps students and learners turn notes into spoken audio, listen back privately, and repeat key ideas with a browser-based dictation workflow.">
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const target = '../#/about';
+      if (window.location.hash !== '#/about') {
+        window.location.replace(target);
+      }
+    });
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; background:#0f1720; color:#e8eef5; margin:0; padding:40px 20px; }
+    .wrap { max-width:760px; margin:0 auto; }
+    .card { background:#111d29; border:1px solid #203241; border-radius:16px; padding:28px; }
+    a { color:#72d5f4; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>About Dictator</h1>
+      <p>Dictator helps students, language learners, and busy readers turn notes into speech so they can listen, repeat, and retain more.</p>
+      <p>It works in your browser, keeps your content on your device, and supports text, PDF, and DOCX workflows without a backend.</p>
+      <p><a href="../#/#/about">Open the app About page</a></p>
+    </div>
+  </div>
+</body>
+</html>
