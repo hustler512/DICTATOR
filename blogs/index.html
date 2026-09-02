@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BLOGS | DICTATOR</title>
+  <meta name="description" content="Browse DICTATOR blog guides about browser text-to-speech, PDF reading aloud, note review, and student study workflows.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://dictator.app/blogs">
+  <meta property="og:title" content="BLOGS | DICTATOR">
+  <meta property="og:description" content="Explore browser reading guides, study workflows, and product pages built around DICTATOR.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dictator.app/blogs">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <button class="icon-button" id="menu-toggle" aria-label="Open navigation menu">☰</button>
+    <button class="logo" id="home-link" aria-label="Go to Home">DICTATOR</button>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <button data-route="/">Home</button>
+      <button data-route="/projects">Projects</button>
+      <button data-route="/blogs">BLOGS</button>
+      <button data-route="/about">About</button>
+      <button data-route="/how-to-use">Help</button>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="settings-toggle" aria-label="Open settings">⚙</button>
+      <button class="icon-button" id="theme-toggle" aria-label="Toggle theme">☾</button>
+    </div>
+  </header>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="side-panel side-panel-left" id="page-menu" aria-label="Page navigation" aria-hidden="true">
+    <div class="panel-header"><strong>Navigate</strong><button class="icon-button" data-close>×</button></div>
+    <button class="nav-link" data-route="/" data-i18n="navHome">Home</button>
+    <button class="nav-link" data-route="/projects" data-i18n="navProjects">Projects</button>
+    <button class="nav-link" data-route="/blogs" data-i18n="navBlogs">BLOGS</button>
+    <button class="nav-link" data-route="/blogs/browser-text-to-speech-reader" data-i18n="navBrowserReader">Browser reader</button>
+    <button class="nav-link" data-route="/blogs/read-pdf-aloud-online" data-i18n="navPdf">Read PDF</button>
+    <button class="nav-link" data-route="/blogs/read-notes-aloud" data-i18n="navNotes">Read notes</button>
+    <button class="nav-link" data-route="/blogs/student-dictation-tool" data-i18n="navStudent">Student tool</button>
+    <button class="nav-link" data-route="/about" data-i18n="navAbout">About</button>
+    <button class="nav-link" data-route="/how-to-use" data-i18n="navHelp">How to use</button>
+    <button class="nav-link" data-route="/privacy" data-i18n="navPrivacy">Privacy</button>
+  </aside>
+
+  <aside class="side-panel side-panel-right" id="settings-panel" aria-label="Settings" aria-hidden="true">
+    <div class="panel-header"><strong>Settings</strong><button class="icon-button" data-close>×</button></div>
+    <label class="setting">Theme<select id="setting-theme"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></label>
+    <label class="setting">UI language<select id="ui-language"><option value="auto">Auto</option><option value="pt">PT</option><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option><option value="it">IT</option><option value="ru">RU</option></select></label>
+    <label class="setting">Default language<select id="default-language"><option value="auto">Auto</option><option value="pt">PT</option><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option><option value="it">IT</option><option value="ru">RU</option></select></label>
+    <label class="setting">Words per group<select id="words-per-group"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+    <label class="setting">Repetitions<select id="repetitions"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+    <label class="setting speed-setting">Speed <input id="speed-range" type="range" min="0.25" max="2" step="0.05" value="0.9"><input id="speed-value" type="number" min="0.25" max="2" step="0.05" value="0.9" aria-label="Default speed value"><span>x</span></label>
+    <label class="setting speed-setting">Pause between groups<input id="pause-range" type="range" min="0" max="3.5" step="0.1" value="0.8"><input id="pause-value" type="number" min="0" max="3.5" step="0.1" value="0.8" aria-label="Pause duration in seconds"><span>s</span></label>
+  </aside>
+
+  <main class="app-main">
+    <div class="page blog-page">
+      <div class="seo-content">
+        <div class="eyebrow" data-i18n="eyebrow">DICTATOR</div>
+        <h1 data-i18n="blogTitle">BLOGS</h1>
+        <p data-i18n="intro">Browse practical guides and browser-based reading articles designed around learning, revision, PDFs, and study workflows.</p>
+        <div class="seo-grid">
+          <article>
+            <h2 data-i18n="card1Title">Browser Text to Speech Reader</h2>
+            <p data-i18n="card1Text">Use a browser text-to-speech reader to turn notes, articles, and study material into spoken audio.</p>
+            <a class="button primary-link" href="/blogs/browser-text-to-speech-reader" data-i18n="readArticle">Read article</a>
+          </article>
+          <article>
+            <h2 data-i18n="card2Title">Read PDF Aloud Online</h2>
+            <p data-i18n="card2Text">Listen to PDF content aloud in your browser with a private, focused study workflow.</p>
+            <a class="button primary-link" href="/blogs/read-pdf-aloud-online" data-i18n="readArticle">Read article</a>
+          </article>
+          <article>
+            <h2 data-i18n="card3Title">Read Notes Aloud in Browser</h2>
+            <p data-i18n="card3Text">Turn notes, summaries, and revision material into listening sessions that improve retention.</p>
+            <a class="button primary-link" href="/blogs/read-notes-aloud" data-i18n="readArticle">Read article</a>
+          </article>
+          <article>
+            <h2 data-i18n="card4Title">Student Dictation Tool</h2>
+            <p data-i18n="card4Text">Use a student-friendly dictation flow to revise by ear and reduce screen fatigue.</p>
+            <a class="button primary-link" href="/blogs/student-dictation-tool" data-i18n="readArticle">Read article</a>
+          </article>
+        </div>
+        <p style="margin-top:25px;"><a href="/" class="button primary-link" data-i18n="tryTool">Try the tool</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const pageMenu = document.querySelector('#page-menu');
+      const settingsPanel = document.querySelector('#settings-panel');
+      const scrim = document.querySelector('#scrim');
+      const themeSelect = document.querySelector('#setting-theme');
+      const uiSelect = document.querySelector('#ui-language');
+      const defaultSelect = document.querySelector('#default-language');
+      const wordsSelect = document.querySelector('#words-per-group');
+      const repsSelect = document.querySelector('#repetitions');
+      const speedRange = document.querySelector('#speed-range');
+      const speedValue = document.querySelector('#speed-value');
+      const pauseRange = document.querySelector('#pause-range');
+      const pauseValue = document.querySelector('#pause-value');
+      const defaults = { uiLanguage:'auto', defaultDictationLang:'auto', defaultWordsPerGroup:6, defaultRepetitions:2, defaultSpeed:0.9, defaultPauseDuration:0.8, theme:'system' };
+      function getSettings() { try { return { ...defaults, ...JSON.parse(localStorage.getItem('dictator_settings') || '{}') }; } catch { return { ...defaults }; } }
+      function getSystemUiLanguage() { const browser = (navigator.language || navigator.languages?.[0] || 'en').toLowerCase(); const key = browser.split('-')[0]; return ['pt','en','fr','es','de','it','ru'].includes(key) ? key : 'en'; }
+      function resolveUiLanguage(value='auto') { const saved = (value||'auto').toLowerCase(); return saved === 'auto' ? getSystemUiLanguage() : ['pt','en','fr','es','de','it','ru'].includes(saved) ? saved : 'en'; }
+      const translations = {
+        en: { navHome:'Home', navProjects:'Projects', navBlogs:'BLOGS', navAbout:'About', navHelp:'How to use', navPrivacy:'Privacy', navBrowserReader:'Browser reader', navPdf:'Read PDF', navNotes:'Read notes', navStudent:'Student tool', eyebrow:'DICTATOR', blogTitle:'BLOGS', intro:'Browse practical guides and browser-based reading articles designed around learning, revision, PDFs, and study workflows.', card1Title:'Browser Text to Speech Reader', card1Text:'Use a browser text-to-speech reader to turn notes, articles, and study material into spoken audio.', card2Title:'Read PDF Aloud Online', card2Text:'Listen to PDF content aloud in your browser with a private, focused study workflow.', card3Title:'Read Notes Aloud in Browser', card3Text:'Turn notes, summaries, and revision material into listening sessions that improve retention.', card4Title:'Student Dictation Tool', card4Text:'Use a student-friendly dictation flow to revise by ear and reduce screen fatigue.', readArticle:'Read article', tryTool:'Try the tool', settings:'Settings', theme:'Theme', uiLanguage:'UI language', defaultLanguage:'Default language', wordsPerGroup:'Words per group', repetitions:'Repetitions', speed:'Speed', pause:'Pause between groups', auto:'Auto' },
+        pt: { navHome:'Início', navProjects:'Projetos', navBlogs:'BLOGS', navAbout:'Sobre', navHelp:'Como usar', navPrivacy:'Privacidade', navBrowserReader:'Leitor do navegador', navPdf:'Ler PDF', navNotes:'Ler notas', navStudent:'Ferramenta do aluno', eyebrow:'DICTATOR', blogTitle:'BLOGS', intro:'Explore guias práticos e artigos sobre leitura no navegador para aprendizagem, revisão, PDFs e estudos.', card1Title:'Leitor de texto para voz no navegador', card1Text:'Use um leitor de texto para voz no navegador para transformar notas, artigos e materiais de estudo em áudio falado.', card2Title:'Ler PDF em voz alta online', card2Text:'Ouça conteúdo de PDF em voz alta no navegador com um fluxo privado e focado de estudo.', card3Title:'Ler notas em voz alta no navegador', card3Text:'Transforme notas, resumos e materiais de revisão em sessões de escuta que melhoram a retenção.', card4Title:'Ferramenta de ditado para estudantes', card4Text:'Use um fluxo de ditado amigável para revisar por áudio e reduzir fadiga visual.', readArticle:'Ler artigo', tryTool:'Testar a ferramenta', settings:'Configurações', theme:'Tema', uiLanguage:'Idioma da interface', defaultLanguage:'Idioma padrão', wordsPerGroup:'Palavras por grupo', repetitions:'Repetições', speed:'Velocidade', pause:'Pausa entre grupos', auto:'Automático' },
+        fr: { navHome:'Accueil', navProjects:'Projets', navBlogs:'BLOGS', navAbout:'À propos', navHelp:'Comment utiliser', navPrivacy:'Confidentialité', navBrowserReader:'Lecteur du navigateur', navPdf:'Lire le PDF', navNotes:'Lire les notes', navStudent:'Outil étudiant', eyebrow:'DICTATOR', blogTitle:'BLOGS', intro:'Consultez des guides pratiques et des articles de lecture dans le navigateur pour l’apprentissage, la révision, les PDF et les études.', card1Title:'Lecteur de texte en parole du navigateur', card1Text:'Utilisez un lecteur vocal dans le navigateur pour transformer notes, articles et supports d’étude en audio parlé.', card2Title:'Lire un PDF à voix haute en ligne', card2Text:'Écoutez le contenu PDF à voix haute dans le navigateur avec un workflow d’étude privé et ciblé.', card3Title:'Lire les notes à voix haute dans le navigateur', card3Text:'Transformez notes, résumés et matériel de révision en sessions d’écoute qui renforcent la mémorisation.', card4Title:'Outil de dictée pour étudiants', card4Text:'Utilisez un flux de dictée étudiantil pour réviser à l’oreille et réduire la fatigue visuelle.', readArticle:'Lire l’article', tryTool:'Essayer l’outil', settings:'Paramètres', theme:'Thème', uiLanguage:'Langue de l’interface', defaultLanguage:'Langue par défaut', wordsPerGroup:'Mots par groupe', repetitions:'Répétitions', speed:'Vitesse', pause:'Pause entre les groupes', auto:'Auto' },
+        es: { navHome:'Inicio', navProjects:'Proyectos', navBlogs:'BLOGS', navAbout:'Acerca de', navHelp:'Cómo usar', navPrivacy:'Privacidad', navBrowserReader:'Lector del navegador', navPdf:'Leer PDF', navNotes:'Leer apuntes', navStudent:'Herramienta del estudiante', eyebrow:'DICTATOR', blogTitle:'BLOGS', intro:'Explora guías prácticas y artículos de lectura en el navegador para aprender, repasar, estudiar con PDF y trabajar con material académico.', card1Title:'Lector de texto a voz del navegador', card1Text:'Usa un lector de texto a voz del navegador para convertir notas, artículos y material de estudio en audio hablado.', card2Title:'Leer PDF en voz alta en línea', card2Text:'Escucha contenido PDF en voz alta en el navegador con un flujo de estudio privado y enfocado.', card3Title:'Leer apuntes en voz alta en el navegador', card3Text:'Convierte apuntes, resúmenes y material de repaso en sesiones de escucha que mejoran la retención.', card4Title:'Herramienta de dictado para estudiantes', card4Text:'Usa un flujo de dictado pensado para estudiantes para repasar por oído y reducir la fatiga visual.', readArticle:'Leer artículo', tryTool:'Probar la herramienta', settings:'Ajustes', theme:'Tema', uiLanguage:'Idioma de la interfaz', defaultLanguage:'Idioma predeterminado', wordsPerGroup:'Palabras por grupo', repetitions:'Repeticiones', speed:'Velocidad', pause:'Pausa entre grupos', auto:'Automático' },
+        de: { navHome:'Start', navProjects:'Projekte', navBlogs:'BLOGS', navAbout:'Über uns', navHelp:'Anleitung', navPrivacy:'Datenschutz', navBrowserReader:'Browser-Leser', navPdf:'PDF lesen', navNotes:'Notizen lesen', navStudent:'Studenten-Tool', eyebrow:'DICTATOR', blogTitle:'BLOGS', intro:'Entdecke praktische Guides und Browser-Artikel zu Lernen, Wiederholung, PDFs und Studienabläufen.', card1Title:'Browser-Sprachausgabe-Leser', card1Text:'Nutze einen Browser-Sprachausgabe-Leser, um Notizen, Artikel und Lernmaterial in gesprochene Sprache zu verwandeln.', card2Title:'PDF online laut vorlesen', card2Text:'Höre PDF-Inhalte im Browser laut an und nutze einen privaten, fokussierten Lernfluss.', card3Title:'Notizen im Browser laut vorlesen', card3Text:'Wandle Notizen, Zusammenfassungen und Wiederholungsmaterial in Hörsitzungen um, die das Behalten verbessern.', card4Title:'Diktat-Tool für Studierende', card4Text:'Nutze einen studentischen Diktatfluss, um per Hören zu wiederholen und die Bildschirmermüdung zu reduzieren.', readArticle:'Artikel lesen', tryTool:'Tool testen', settings:'Einstellungen', theme:'Thema', uiLanguage:'Sprache der Oberfläche', defaultLanguage:'Standardsprache', wordsPerGroup:'Wörter pro Gruppe', repetitions:'Wiederholungen', speed:'Geschwindigkeit', pause:'Pause zwischen Gruppen', auto:'Automatisch' },
+        it: { navHome:'Home', navProjects:'Progetti', navBlogs:'BLOGS', navAbout:'Informazioni', navHelp:'Come usare', navPrivacy:'Privacy', navBrowserReader:'Lettore del browser', navPdf:'Leggi PDF', navNotes:'Leggi appunti', navStudent:'Strumento studenti', eyebrow:'DICTATOR', blogTitle:'BLOGS', intro:'Esplora guide pratiche e articoli di lettura nel browser per apprendimento, ripasso, PDF e flussi di studio.', card1Title:'Lettore vocale del browser', card1Text:'Usa un lettore vocale del browser per trasformare note, articoli e materiale di studio in audio parlato.', card2Title:'Leggi PDF a voce alta online', card2Text:'Ascolta contenuti PDF ad alta voce nel browser con un flusso di studio privato e concentrato.', card3Title:'Leggi appunti a voce alta nel browser', card3Text:'Trasforma appunti, riassunti e materiale di ripasso in sessioni di ascolto che migliorano la memorizzazione.', card4Title:'Strumento di dettatura per studenti', card4Text:'Usa un flusso di dettatura pensato per studenti per ripassare a orecchio e ridurre la fatica visiva.', readArticle:'Leggi articolo', tryTool:'Prova lo strumento', settings:'Impostazioni', theme:'Tema', uiLanguage:'Lingua dell’interfaccia', defaultLanguage:'Lingua predefinita', wordsPerGroup:'Parole per gruppo', repetitions:'Ripetizioni', speed:'Velocità', pause:'Pausa tra i gruppi', auto:'Automatico' },
+        ru: { navHome:'Главная', navProjects:'Проекты', navBlogs:'BLOGS', navAbout:'О проекте', navHelp:'Как пользоваться', navPrivacy:'Конфиденциальность', navBrowserReader:'Браузерный читатель', navPdf:'Читать PDF', navNotes:'Читать заметки', navStudent:'Студенческий инструмент', eyebrow:'DICTATOR', blogTitle:'BLOGS', intro:'Изучайте практические гайды и статьи о чтении в браузере для обучения, повторения, PDF и рабочих процессов.', card1Title:'Чтение текста в речь в браузере', card1Text:'Используйте средство чтения текста в речь в браузере, чтобы превращать заметки, статьи и учебный материал в озвученный аудио.', card2Title:'Читать PDF вслух онлайн', card2Text:'Слушайте содержание PDF вслух в браузере с приватным и сфокусированным учебным процессом.', card3Title:'Читать заметки вслух в браузере', card3Text:'Преобразуйте заметки, резюме и материалы повторения в сессии прослушивания, которые улучшают запоминание.', card4Title:'Инструмент диктанта для студентов', card4Text:'Используйте студенческий поток диктовки, чтобы повторять материал на слух и снижать зрительную усталость.', readArticle:'Читать статью', tryTool:'Попробовать инструмент', settings:'Настройки', theme:'Тема', uiLanguage:'Язык интерфейса', defaultLanguage:'Язык по умолчанию', wordsPerGroup:'Слов в группе', repetitions:'Повторы', speed:'Скорость', pause:'Пауза между группами', auto:'Авто' }
+      };
+      function applyLanguage() {
+        const uiLanguage = resolveUiLanguage(getSettings().uiLanguage);
+        const copy = translations[uiLanguage] || translations.en;
+        document.querySelectorAll('[data-i18n]').forEach((node) => {
+          const key = node.getAttribute('data-i18n');
+          if (copy[key]) node.textContent = copy[key];
+        });
+        document.querySelector('#page-menu .panel-header strong').textContent = copy.navTitle || 'Navigate';
+        document.querySelector('#settings-panel .panel-header strong').textContent = copy.settings || 'Settings';
+        document.querySelector('#setting-theme').closest('label').childNodes[0].nodeValue = `${copy.theme || 'Theme'} `;
+        document.querySelector('#ui-language').closest('label').childNodes[0].nodeValue = `${copy.uiLanguage || 'UI language'} `;
+        document.querySelector('#default-language').closest('label').childNodes[0].nodeValue = `${copy.defaultLanguage || 'Default language'} `;
+        document.querySelector('#words-per-group').closest('label').childNodes[0].nodeValue = `${copy.wordsPerGroup || 'Words per group'} `;
+        document.querySelector('#repetitions').closest('label').childNodes[0].nodeValue = `${copy.repetitions || 'Repetitions'} `;
+        document.querySelector('#speed-range').closest('label').childNodes[0].nodeValue = `${copy.speed || 'Speed'} `;
+        document.querySelector('#pause-range').closest('label').childNodes[0].nodeValue = `${copy.pause || 'Pause between groups'} `;
+        document.querySelectorAll('#ui-language option, #default-language option').forEach((option) => { if (option.value === 'auto') option.textContent = copy.auto || 'Auto'; });
+      }
+      function setTheme(theme) {
+        const dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        root.dataset.theme = dark ? 'dark' : 'light';
+        if (themeSelect) themeSelect.value = theme;
+        document.querySelector('#theme-toggle').textContent = dark ? '☀' : '☾';
+        const settings = getSettings(); settings.theme = theme; localStorage.setItem('dictator_settings', JSON.stringify(settings));
+      }
+      function openPanel(panel) {
+        pageMenu.classList.toggle('open', panel === pageMenu);
+        settingsPanel.classList.toggle('open', panel === settingsPanel);
+        scrim.hidden = !(pageMenu.classList.contains('open') || settingsPanel.classList.contains('open'));
+        pageMenu.setAttribute('aria-hidden', String(!pageMenu.classList.contains('open')));
+        settingsPanel.setAttribute('aria-hidden', String(!settingsPanel.classList.contains('open')));
+      }
+      function syncSettingsUi() {
+        const settings = getSettings();
+        if (uiSelect) uiSelect.value = settings.uiLanguage || 'auto';
+        if (defaultSelect) defaultSelect.value = settings.defaultDictationLang || 'auto';
+        if (wordsSelect) wordsSelect.value = String(settings.defaultWordsPerGroup || 6);
+        if (repsSelect) repsSelect.value = String(settings.defaultRepetitions || 2);
+        if (speedRange) { speedRange.value = String(settings.defaultSpeed || 0.9); speedValue.value = String(settings.defaultSpeed || 0.9); }
+        if (pauseRange) { pauseRange.value = String(settings.defaultPauseDuration || 0.8); pauseValue.value = String(settings.defaultPauseDuration || 0.8); }
+        if (themeSelect) themeSelect.value = settings.theme || 'system';
+      }
+      function saveSettings() {
+        const settings = getSettings();
+        settings.uiLanguage = uiSelect ? uiSelect.value : 'auto';
+        settings.defaultDictationLang = defaultSelect ? defaultSelect.value : 'auto';
+        settings.defaultWordsPerGroup = Number(wordsSelect?.value || settings.defaultWordsPerGroup || 6);
+        settings.defaultRepetitions = Number(repsSelect?.value || settings.defaultRepetitions || 2);
+        settings.defaultSpeed = Number(speedRange?.value || settings.defaultSpeed || 0.9);
+        settings.defaultPauseDuration = Number(pauseRange?.value || settings.defaultPauseDuration || 0.8);
+        settings.theme = themeSelect ? themeSelect.value : settings.theme || 'system';
+        localStorage.setItem('dictator_settings', JSON.stringify(settings));
+        applyLanguage();
+        setTheme(settings.theme);
+      }
+      document.querySelector('#menu-toggle').addEventListener('click', () => openPanel(pageMenu));
+      document.querySelector('#settings-toggle').addEventListener('click', () => openPanel(settingsPanel));
+      document.querySelector('#theme-toggle').addEventListener('click', () => { const current = root.dataset.theme === 'dark' ? 'light' : 'dark'; setTheme(current); });
+      document.querySelector('#scrim').addEventListener('click', () => openPanel(null));
+      document.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => openPanel(null)));
+      document.querySelectorAll('[data-route]').forEach((button) => { button.addEventListener('click', () => { const route = button.getAttribute('data-route'); if (route) window.location.href = route; }); });
+      document.querySelector('#home-link').addEventListener('click', () => { window.location.href = '/'; });
+      if (uiSelect) uiSelect.addEventListener('change', saveSettings);
+      if (defaultSelect) defaultSelect.addEventListener('change', saveSettings);
+      if (wordsSelect) wordsSelect.addEventListener('change', saveSettings);
+      if (repsSelect) repsSelect.addEventListener('change', saveSettings);
+      if (speedRange) { speedRange.addEventListener('input', () => { speedValue.value = speedRange.value; saveSettings(); }); speedValue.addEventListener('input', () => { speedRange.value = speedValue.value; saveSettings(); }); }
+      if (pauseRange) { pauseRange.addEventListener('input', () => { pauseValue.value = pauseRange.value; saveSettings(); }); pauseValue.addEventListener('input', () => { pauseRange.value = pauseValue.value; saveSettings(); }); }
+      if (themeSelect) themeSelect.addEventListener('change', (event) => { setTheme(event.target.value); });
+      syncSettingsUi();
+      applyLanguage();
+      setTheme(getSettings().theme || 'system');
+    })();
+  </script>
+</body>
+</html>

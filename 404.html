@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DICTATOR | Loading…</title>
+  <meta name="description" content="DICTATOR is a private browser-based text-to-speech tool for notes, PDFs, and study material.">
+  <script>
+    (() => {
+      const path = location.pathname.replace(/\/+$/, '');
+      const base = '/DICTATOR';
+      const clean = path.startsWith(base) ? path.slice(base.length) || '/' : path;
+      const dest = clean === '/' ? '/' : clean;
+      sessionStorage.setItem('dictator_pending_route', dest);
+      const target = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+        ? `/#${dest}`
+        : `${base}/#${dest}`;
+      location.replace(target || '/');
+    })();
+  </script>
+</head>
+<body>
+  <p>Loading DICTATOR…</p>
+</body>
+</html>

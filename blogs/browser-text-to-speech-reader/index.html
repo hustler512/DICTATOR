@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Text to Speech Reader | DICTATOR</title>
+  <meta name="description" content="Use a browser text to speech reader to turn notes, study material, and documents into spoken audio without uploading your files.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://dictator.app/blogs/browser-text-to-speech-reader">
+  <meta property="og:title" content="Browser Text to Speech Reader | DICTATOR">
+  <meta property="og:description" content="Read notes, articles, and study material aloud in your browser with a private text-to-speech reader built for revision and focus.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dictator.app/blogs/browser-text-to-speech-reader">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <button class="icon-button" id="menu-toggle" aria-label="Open navigation menu">☰</button>
+    <button class="logo" id="home-link" aria-label="Go to Home">DICTATOR</button>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <button data-route="/">Home</button>
+      <button data-route="/projects">Projects</button>
+      <button data-route="/blogs">BLOGS</button>
+      <button data-route="/about">About</button>
+      <button data-route="/how-to-use">Help</button>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="settings-toggle" aria-label="Open settings">⚙</button>
+      <button class="icon-button" id="theme-toggle" aria-label="Toggle theme">☾</button>
+    </div>
+  </header>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="side-panel side-panel-left" id="page-menu" aria-label="Page navigation" aria-hidden="true">
+    <div class="panel-header"><strong>Navigate</strong><button class="icon-button" data-close>×</button></div>
+    <button class="nav-link" data-route="/">Home</button>
+    <button class="nav-link" data-route="/projects">Projects</button>
+    <button class="nav-link" data-route="/blogs">BLOGS</button>
+    <button class="nav-link" data-route="/blogs/browser-text-to-speech-reader">Browser reader</button>
+    <button class="nav-link" data-route="/blogs/read-pdf-aloud-online">Read PDF</button>
+    <button class="nav-link" data-route="/blogs/read-notes-aloud">Read notes</button>
+    <button class="nav-link" data-route="/blogs/student-dictation-tool">Student tool</button>
+    <button class="nav-link" data-route="/about">About</button>
+    <button class="nav-link" data-route="/how-to-use">How to use</button>
+    <button class="nav-link" data-route="/privacy">Privacy</button>
+  </aside>
+
+  <aside class="side-panel side-panel-right" id="settings-panel" aria-label="Settings" aria-hidden="true">
+    <div class="panel-header"><strong>Settings</strong><button class="icon-button" data-close>×</button></div>
+    <label class="setting">Theme<select id="setting-theme"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></label>
+    <label class="setting">UI language<select id="ui-language"><option value="auto">Auto</option><option value="pt">PT</option><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option><option value="it">IT</option><option value="ru">RU</option></select></label>
+    <label class="setting">Default language<select id="default-language"><option value="auto">Auto</option><option value="pt">PT</option><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option><option value="it">IT</option><option value="ru">RU</option></select></label>
+    <label class="setting">Words per group<select id="words-per-group"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+    <label class="setting">Repetitions<select id="repetitions"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+    <label class="setting speed-setting">Speed <input id="speed-range" type="range" min="0.25" max="2" step="0.05" value="0.9"><input id="speed-value" type="number" min="0.25" max="2" step="0.05" value="0.9" aria-label="Default speed value"><span>x</span></label>
+    <label class="setting speed-setting">Pause between groups<input id="pause-range" type="range" min="0" max="3.5" step="0.1" value="0.8"><input id="pause-value" type="number" min="0" max="3.5" step="0.1" value="0.8" aria-label="Pause duration in seconds"><span>s</span></label>
+  </aside>
+
+  <main class="app-main">
+    <div class="page">
+      <div class="static-content">
+        <div class="eyebrow" data-i18n="eyebrow">DICTATOR</div>
+        <h1 data-i18n="title">Browser Text to Speech Reader</h1>
+        <p data-i18n="intro">Use a browser text to speech reader to turn notes, study material, and digital documents into spoken audio. It keeps your reading workflow simple, private, and focused in one place.</p>
+        <section>
+          <h2 data-i18n="why">Why people use it</h2>
+          <ul>
+            <li data-i18n="reason1">Listen to notes and revision content without staring at a screen for long periods.</li>
+            <li data-i18n="reason2">Improve focus by pairing reading with audio and repetition.</li>
+            <li data-i18n="reason3">Use it in the browser for quick study sessions without uploading content to a server.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 data-i18n="how">How it works</h2>
+          <ol>
+            <li data-i18n="step1">Paste text, or upload a TXT, PDF, or DOCX.</li>
+            <li data-i18n="step2">Adjust group size, speed, and language in the reader.</li>
+            <li data-i18n="step3">Listen while you review, revise, and learn.</li>
+          </ol>
+        </section>
+        <section>
+          <h2 data-i18n="faq">Frequently asked questions</h2>
+          <div class="faq-item"><button class="faq-question" data-i18n="q1">What is a browser text to speech reader?</button><div class="faq-answer"><p data-i18n="a1">A browser text to speech reader converts written text into spoken audio inside the web browser. It is ideal for learning, revision, and reading long notes with less eye strain.</p></div></div>
+          <div class="faq-item"><button class="faq-question" data-i18n="q2">Can I use it with study notes?</button><div class="faq-answer"><p data-i18n="a2">Yes. It is designed for notes, summaries, essays, and reading material that is easier to absorb by ear.</p></div></div>
+          <div class="faq-item"><button class="faq-question" data-i18n="q3">Does it keep my content private?</button><div class="faq-answer"><p data-i18n="a3">The main workflow is local-first and browser-based, helping keep your notes on the device rather than in a remote application server.</p></div></div>
+        </section>
+        <section>
+          <h2 data-i18n="startTitle">Start reading today</h2>
+          <p data-i18n="startCopy">Use DICTATOR to turn notes, PDFs, and study material into spoken audio in your browser.</p>
+          <p><a href="/" class="button primary-link" data-i18n="tryTool">Try the tool</a> <a href="/blogs" class="button primary-link" data-i18n="backBlogs">Back to BLOGS</a></p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const pageMenu = document.querySelector('#page-menu');
+      const settingsPanel = document.querySelector('#settings-panel');
+      const scrim = document.querySelector('#scrim');
+      const themeToggle = document.querySelector('#theme-toggle');
+      const themeSelect = document.querySelector('#setting-theme');
+      const uiSelect = document.querySelector('#ui-language');
+      const defaultSelect = document.querySelector('#default-language');
+      const wordsSelect = document.querySelector('#words-per-group');
+      const repsSelect = document.querySelector('#repetitions');
+      const speedRange = document.querySelector('#speed-range');
+      const speedValue = document.querySelector('#speed-value');
+      const pauseRange = document.querySelector('#pause-range');
+      const pauseValue = document.querySelector('#pause-value');
+      const defaults = { uiLanguage:'auto', defaultDictationLang:'auto', defaultWordsPerGroup:6, defaultRepetitions:2, defaultSpeed:0.9, defaultPauseDuration:0.8, theme:'system' };
+      const translations = {
+        en: { eyebrow:'DICTATOR', title:'Browser Text to Speech Reader', intro:'Use a browser text to speech reader to turn notes, study material, and digital documents into spoken audio. It keeps your reading workflow simple, private, and focused in one place.', why:'Why people use it', reason1:'Listen to notes and revision content without staring at a screen for long periods.', reason2:'Improve focus by pairing reading with audio and repetition.', reason3:'Use it in the browser for quick study sessions without uploading content to a server.', how:'How it works', step1:'Paste text, or upload a TXT, PDF, or DOCX.', step2:'Adjust group size, speed, and language in the reader.', step3:'Listen while you review, revise, and learn.', faq:'Frequently asked questions', q1:'What is a browser text to speech reader?', a1:'A browser text to speech reader converts written text into spoken audio inside the web browser. It is ideal for learning, revision, and reading long notes with less eye strain.', q2:'Can I use it with study notes?', a2:'Yes. It is designed for notes, summaries, essays, and reading material that is easier to absorb by ear.', q3:'Does it keep my content private?', a3:'The main workflow is local-first and browser-based, helping keep your notes on the device rather than in a remote application server.', startTitle:'Start reading today', startCopy:'Use DICTATOR to turn notes, PDFs, and study material into spoken audio in your browser.', tryTool:'Try the tool', backBlogs:'Back to BLOGS', settings:'Settings', theme:'Theme', uiLanguage:'UI language', defaultLanguage:'Default language', wordsPerGroup:'Words per group', repetitions:'Repetitions', speed:'Speed', pause:'Pause between groups', auto:'Auto' },
+        pt: { eyebrow:'DICTATOR', title:'Leitor de texto para voz no navegador', intro:'Use um leitor de texto para voz no navegador para transformar notas, material de estudo e documentos digitais em áudio falado. Mantém seu fluxo de leitura simples, privado e focado.', why:'Por que as pessoas usam', reason1:'Ouça notas e conteúdo de revisão sem ficar olhando para a tela por longos períodos.', reason2:'Melhore o foco ao combinar leitura com áudio e repetição.', reason3:'Use no navegador para sessões rápidas de estudo sem enviar arquivos para um servidor.', how:'Como funciona', step1:'Cole o texto ou envie um TXT, PDF ou DOCX.', step2:'Ajuste o tamanho do grupo, velocidade e idioma no leitor.', step3:'Ouça enquanto revisa, repete e aprende.', faq:'Perguntas frequentes', q1:'O que é um leitor de texto para voz no navegador?', a1:'É uma ferramenta que converte texto escrito em áudio falado dentro do navegador, útil para aprender, revisar e ler notas longas com menos esforço visual.', q2:'Posso usar com anotações de estudo?', a2:'Sim. Foi pensado para notas, resumos, ensaios e materiais de leitura que são mais fáceis de absorver por áudio.', q3:'Meu conteúdo fica privado?', a3:'O fluxo principal é local e baseado no navegador, ajudando a manter suas notas no dispositivo em vez de em um servidor remoto.', startTitle:'Comece a ler hoje', startCopy:'Use o DICTATOR para transformar notas, PDFs e material de estudo em áudio falado no navegador.', tryTool:'Testar a ferramenta', backBlogs:'Voltar para BLOGS', settings:'Configurações', theme:'Tema', uiLanguage:'Idioma da interface', defaultLanguage:'Idioma padrão', wordsPerGroup:'Palavras por grupo', repetitions:'Repetições', speed:'Velocidade', pause:'Pausa entre grupos', auto:'Automático' },
+        fr: { eyebrow:'DICTATOR', title:'Lecteur de texte en parole du navigateur', intro:'Utilisez un lecteur de texte en parole dans le navigateur pour transformer notes, matériel d’étude et documents numériques en audio parlé. Votre flux de lecture reste simple, privé et concentré.', why:'Pourquoi les gens l’utilisent', reason1:'Écoutez les notes et contenus de révision sans regarder longtemps l’écran.', reason2:'Améliorez la concentration en combinant lecture, audio et répétition.', reason3:'Utilisez-le dans le navigateur pour des sessions d’étude rapides sans téléverser de contenu.', how:'Comment ça marche', step1:'Collez le texte ou téléversez un TXT, PDF ou DOCX.', step2:'Réglez la taille du groupe, la vitesse et la langue dans le lecteur.', step3:'Écoutez pendant que vous révisez, répétez et apprenez.', faq:'Questions fréquentes', q1:'Qu’est-ce qu’un lecteur de texte en parole dans le navigateur ?', a1:'C’est un outil qui transforme le texte écrit en audio parlé dans le navigateur, utile pour l’apprentissage, la révision et la lecture de longues notes avec moins de fatigue visuelle.', q2:'Puis-je l’utiliser avec des notes d’étude ?', a2:'Oui. Il est conçu pour les notes, résumés, essais et contenus de lecture plus faciles à assimiler à l’oreille.', q3:'Mon contenu reste-t-il privé ?', a3:'Le flux principal est local et basé sur le navigateur, ce qui aide à garder vos notes sur l’appareil au lieu d’un serveur distant.', startTitle:'Commencez à lire aujourd’hui', startCopy:'Utilisez DICTATOR pour transformer notes, PDF et matériel d’étude en audio parlé dans le navigateur.', tryTool:'Essayer l’outil', backBlogs:'Retour aux BLOGS', settings:'Paramètres', theme:'Thème', uiLanguage:'Langue de l’interface', defaultLanguage:'Langue par défaut', wordsPerGroup:'Mots par groupe', repetitions:'Répétitions', speed:'Vitesse', pause:'Pause entre les groupes', auto:'Auto' },
+        es: { eyebrow:'DICTATOR', title:'Lector de texto a voz del navegador', intro:'Usa un lector de texto a voz del navegador para convertir notas, material de estudio y documentos digitales en audio hablado. Mantiene tu flujo de lectura simple, privado y enfocado.', why:'Por qué la gente lo usa', reason1:'Escucha notas y contenido de repaso sin mirar la pantalla durante mucho tiempo.', reason2:'Mejora el enfoque combinando lectura, audio y repetición.', reason3:'Úsalo en el navegador para sesiones rápidas de estudio sin subir contenido a un servidor.', how:'Cómo funciona', step1:'Pega el texto o sube un TXT, PDF o DOCX.', step2:'Ajusta el tamaño del grupo, la velocidad y el idioma en el lector.', step3:'Escucha mientras revisas, repasas y aprendes.', faq:'Preguntas frecuentes', q1:'¿Qué es un lector de texto a voz del navegador?', a1:'Es una herramienta que convierte texto escrito en audio hablado dentro del navegador, útil para aprender, repasar y leer notas largas con menos fatiga visual.', q2:'¿Puedo usarlo con apuntes de estudio?', a2:'Sí. Está diseñado para apuntes, resúmenes, ensayos y material de lectura más fácil de asimilar por oído.', q3:'¿Mantiene mi contenido privado?', a3:'El flujo principal es local y basado en el navegador, ayudando a mantener tus notas en el dispositivo y no en un servidor remoto.', startTitle:'Empieza a leer hoy', startCopy:'Usa DICTATOR para convertir notas, PDFs y material de estudio en audio hablado en el navegador.', tryTool:'Probar la herramienta', backBlogs:'Volver a BLOGS', settings:'Ajustes', theme:'Tema', uiLanguage:'Idioma de la interfaz', defaultLanguage:'Idioma predeterminado', wordsPerGroup:'Palabras por grupo', repetitions:'Repeticiones', speed:'Velocidad', pause:'Pausa entre grupos', auto:'Automático' },
+        de: { eyebrow:'DICTATOR', title:'Browser-Sprachausgabe-Leser', intro:'Nutze einen Browser-Sprachausgabe-Leser, um Notizen, Lernmaterial und digitale Dokumente in gesprochene Sprache umzuwandeln. Dein Lesefluss bleibt einfach, privat und fokussiert.', why:'Warum Menschen es nutzen', reason1:'Höre dir Notizen und Wiederholungsmaterial an, ohne lange auf den Bildschirm zu starren.', reason2:'Verbessere die Konzentration durch Kombination aus Lesen, Audio und Wiederholung.', reason3:'Nutze es im Browser für kurze Lernsessions, ohne Inhalte auf einen Server hochzuladen.', how:'So funktioniert es', step1:'Füge Text ein oder lade eine TXT-, PDF- oder DOCX-Datei hoch.', step2:'Passe Gruppengröße, Geschwindigkeit und Sprache im Leser an.', step3:'Höre zu, während du wiederholst, überprüfst und lernst.', faq:'Häufig gestellte Fragen', q1:'Was ist ein Browser-Sprachausgabe-Leser?', a1:'Ein Browser-Sprachausgabe-Leser wandelt geschriebenen Text in gesprochene Sprache im Browser um. Das ist ideal für Lernen, Wiederholung und das Lesen langer Notizen mit weniger Augenbelastung.', q2:'Kann ich es mit Lernnotizen nutzen?', a2:'Ja. Es ist für Notizen, Zusammenfassungen, Essays und Leseinhalte gedacht, die sich leichter über das Ohr aufnehmen lassen.', q3:'Bleiben meine Inhalte privat?', a3:'Der Hauptfluss ist lokal und browserbasiert und hält deine Notizen auf dem Gerät statt auf einem Remote-Server.', startTitle:'Heute anfangen zu lesen', startCopy:'Nutze DICTATOR, um Notizen, PDFs und Lernmaterial im Browser in gesprochene Sprache umzuwandeln.', tryTool:'Tool testen', backBlogs:'Zurück zu BLOGS', settings:'Einstellungen', theme:'Thema', uiLanguage:'Sprache der Oberfläche', defaultLanguage:'Standardsprache', wordsPerGroup:'Wörter pro Gruppe', repetitions:'Wiederholungen', speed:'Geschwindigkeit', pause:'Pause zwischen Gruppen', auto:'Automatisch' },
+        it: { eyebrow:'DICTATOR', title:'Lettore vocale del browser', intro:'Usa un lettore vocale del browser per trasformare note, materiale di studio e documenti digitali in audio parlato. Mantiene il tuo flusso di lettura semplice, privato e concentrato.', why:'Perché le persone lo usano', reason1:'Ascolta note e contenuti di ripasso senza fissare a lungo lo schermo.', reason2:'Migliora la concentrazione combinando lettura, audio e ripetizione.', reason3:'Usalo nel browser per sessioni rapide di studio senza caricare contenuti su un server.', how:'Come funziona', step1:'Incolla il testo o carica un TXT, PDF o DOCX.', step2:'Regola la dimensione del gruppo, la velocità e la lingua nel lettore.', step3:'Ascolta mentre ripassi, correggi e impari.', faq:'Domande frequenti', q1:'Cos’è un lettore vocale del browser?', a1:'È uno strumento che trasforma il testo scritto in audio parlato dentro il browser, utile per apprendere, ripassare e leggere note lunghe con meno fatica visiva.', q2:'Posso usarlo con appunti di studio?', a2:'Sì. È progettato per appunti, riassunti, saggi e materiali di lettura più facili da assimilare a orecchio.', q3:'I miei contenuti restano privati?', a3:'Il flusso principale è locale e basato sul browser, aiutando a mantenere le note sul dispositivo invece che su un server remoto.', startTitle:'Inizia a leggere oggi', startCopy:'Usa DICTATOR per trasformare note, PDF e materiale di studio in audio parlato nel browser.', tryTool:'Prova lo strumento', backBlogs:'Torna a BLOGS', settings:'Impostazioni', theme:'Tema', uiLanguage:'Lingua dell’interfaccia', defaultLanguage:'Lingua predefinita', wordsPerGroup:'Parole per gruppo', repetitions:'Ripetizioni', speed:'Velocità', pause:'Pausa tra i gruppi', auto:'Automatico' },
+        ru: { eyebrow:'DICTATOR', title:'Чтение текста в речь в браузере', intro:'Используйте средство чтения текста в речь в браузере, чтобы превращать заметки, учебный материал и цифровые документы в озвученный аудио. Ваш рабочий процесс остаётся простым, приватным и сосредоточенным.', why:'Почему люди используют', reason1:'Слушайте заметки и материалы повторения, не глядя долго в экран.', reason2:'Улучшайте концентрацию, сочетая чтение, аудио и повторение.', reason3:'Используйте в браузере для быстрых учебных сессий без загрузки данных на сервер.', how:'Как это работает', step1:'Вставьте текст или загрузите TXT, PDF или DOCX.', step2:'Настройте размер группы, скорость и язык в читалке.', step3:'Слушайте, пока повторяете, проверяете и учитесь.', faq:'Часто задаваемые вопросы', q1:'Что такое чтение текста в речь в браузере?', a1:'Это инструмент, который превращает письменный текст в озвученный аудио в браузере, полезный для обучения, повторения и чтения длинных заметок с меньшей зрительной усталостью.', q2:'Можно ли использовать для учебных заметок?', a2:'Да. Он подходит для заметок, резюме, эссе и материалов чтения, которые проще усваивать на слух.', q3:'Сохраняется ли приватность?', a3:'Основной поток локальный и браузерный, поэтому заметки остаются на устройстве, а не на удалённом сервере.', startTitle:'Начните читать сегодня', startCopy:'Используйте DICTATOR, чтобы превращать заметки, PDF и учебный материал в озвученный текст в браузере.', tryTool:'Попробовать инструмент', backBlogs:'Назад к BLOGS', settings:'Настройки', theme:'Тема', uiLanguage:'Язык интерфейса', defaultLanguage:'Язык по умолчанию', wordsPerGroup:'Слов в группе', repetitions:'Повторы', speed:'Скорость', pause:'Пауза между группами', auto:'Авто' }
+      };
+      function getSettings() { try { return { ...defaults, ...JSON.parse(localStorage.getItem('dictator_settings') || '{}') }; } catch { return { ...defaults }; } }
+      function getSystemUiLanguage() { const browser = (navigator.language || navigator.languages?.[0] || 'en').toLowerCase(); const key = browser.split('-')[0]; return ['pt','en','fr','es','de','it','ru'].includes(key) ? key : 'en'; }
+      function resolveUiLanguage(value='auto') { const saved = (value || 'auto').toLowerCase(); return saved === 'auto' ? getSystemUiLanguage() : ['pt','en','fr','es','de','it','ru'].includes(saved) ? saved : 'en'; }
+      function applyLanguage() {
+        const uiLanguage = resolveUiLanguage(getSettings().uiLanguage);
+        const copy = translations[uiLanguage] || translations.en;
+        document.querySelectorAll('[data-i18n]').forEach((node) => { const key = node.getAttribute('data-i18n'); if (copy[key]) node.textContent = copy[key]; });
+        document.querySelector('#settings-panel .panel-header strong').textContent = copy.settings || 'Settings';
+        const themeLabel = document.querySelector('#setting-theme').closest('label'); themeLabel.childNodes[0].nodeValue = `${copy.theme || 'Theme'} `;
+        const uiLabel = document.querySelector('#ui-language').closest('label'); uiLabel.childNodes[0].nodeValue = `${copy.uiLanguage || 'UI language'} `;
+        const defaultLabel = document.querySelector('#default-language').closest('label'); defaultLabel.childNodes[0].nodeValue = `${copy.defaultLanguage || 'Default language'} `;
+        const wordsLabel = document.querySelector('#words-per-group').closest('label'); wordsLabel.childNodes[0].nodeValue = `${copy.wordsPerGroup || 'Words per group'} `;
+        const repsLabel = document.querySelector('#repetitions').closest('label'); repsLabel.childNodes[0].nodeValue = `${copy.repetitions || 'Repetitions'} `;
+        const speedLabel = document.querySelector('#speed-range').closest('label'); speedLabel.childNodes[0].nodeValue = `${copy.speed || 'Speed'} `;
+        const pauseLabel = document.querySelector('#pause-range').closest('label'); pauseLabel.childNodes[0].nodeValue = `${copy.pause || 'Pause between groups'} `;
+        document.querySelectorAll('#ui-language option, #default-language option').forEach((option) => { if (option.value === 'auto') option.textContent = copy.auto || 'Auto'; });
+      }
+      function setTheme(theme) {
+        const dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        root.dataset.theme = dark ? 'dark' : 'light';
+        if (themeSelect) themeSelect.value = theme;
+        if (themeToggle) themeToggle.textContent = dark ? '☀' : '☾';
+        const settings = getSettings(); settings.theme = theme; localStorage.setItem('dictator_settings', JSON.stringify(settings));
+      }
+      function openPanel(panel) {
+        pageMenu.classList.toggle('open', panel === pageMenu);
+        settingsPanel.classList.toggle('open', panel === settingsPanel);
+        scrim.hidden = !(pageMenu.classList.contains('open') || settingsPanel.classList.contains('open'));
+        pageMenu.setAttribute('aria-hidden', String(!pageMenu.classList.contains('open')));
+        settingsPanel.setAttribute('aria-hidden', String(!settingsPanel.classList.contains('open')));
+      }
+      function syncSettingsUi() {
+        const settings = getSettings();
+        if (uiSelect) uiSelect.value = settings.uiLanguage || 'auto';
+        if (defaultSelect) defaultSelect.value = settings.defaultDictationLang || 'auto';
+        if (wordsSelect) wordsSelect.value = String(settings.defaultWordsPerGroup || 6);
+        if (repsSelect) repsSelect.value = String(settings.defaultRepetitions || 2);
+        if (speedRange) { speedRange.value = String(settings.defaultSpeed || 0.9); speedValue.value = String(settings.defaultSpeed || 0.9); }
+        if (pauseRange) { pauseRange.value = String(settings.defaultPauseDuration || 0.8); pauseValue.value = String(settings.defaultPauseDuration || 0.8); }
+        if (themeSelect) themeSelect.value = settings.theme || 'system';
+      }
+      function saveSettings() {
+        const settings = getSettings();
+        settings.uiLanguage = uiSelect ? uiSelect.value : 'auto';
+        settings.defaultDictationLang = defaultSelect ? defaultSelect.value : 'auto';
+        settings.defaultWordsPerGroup = Number(wordsSelect?.value || settings.defaultWordsPerGroup || 6);
+        settings.defaultRepetitions = Number(repsSelect?.value || settings.defaultRepetitions || 2);
+        settings.defaultSpeed = Number(speedRange?.value || settings.defaultSpeed || 0.9);
+        settings.defaultPauseDuration = Number(pauseRange?.value || settings.defaultPauseDuration || 0.8);
+        settings.theme = themeSelect ? themeSelect.value : settings.theme || 'system';
+        localStorage.setItem('dictator_settings', JSON.stringify(settings));
+        applyLanguage();
+        setTheme(settings.theme);
+      }
+      document.querySelector('#menu-toggle').addEventListener('click', () => openPanel(pageMenu));
+      document.querySelector('#settings-toggle').addEventListener('click', () => openPanel(settingsPanel));
+      document.querySelector('#scrim').addEventListener('click', () => openPanel(null));
+      document.querySelector('#home-link').addEventListener('click', () => { window.location.href = '/'; });
+      document.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => openPanel(null)));
+      document.querySelectorAll('[data-route]').forEach((button) => button.addEventListener('click', () => { const route = button.getAttribute('data-route'); if (route) window.location.href = route; }));
+      document.querySelectorAll('.faq-question').forEach((button) => button.addEventListener('click', () => { button.parentElement.classList.toggle('open'); }));
+      if (uiSelect) uiSelect.addEventListener('change', saveSettings);
+      if (defaultSelect) defaultSelect.addEventListener('change', saveSettings);
+      if (wordsSelect) wordsSelect.addEventListener('change', saveSettings);
+      if (repsSelect) repsSelect.addEventListener('change', saveSettings);
+      if (speedRange) { speedRange.addEventListener('input', () => { speedValue.value = speedRange.value; saveSettings(); }); speedValue.addEventListener('input', () => { speedRange.value = speedValue.value; saveSettings(); }); }
+      if (pauseRange) { pauseRange.addEventListener('input', () => { pauseValue.value = pauseRange.value; saveSettings(); }); pauseValue.addEventListener('input', () => { pauseRange.value = pauseValue.value; saveSettings(); }); }
+      if (themeSelect) themeSelect.addEventListener('change', (event) => { setTheme(event.target.value); });
+      if (themeToggle) themeToggle.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+      syncSettingsUi();
+      applyLanguage();
+      setTheme(getSettings().theme || 'system');
+    })();
+  </script>
+</body>
+</html>

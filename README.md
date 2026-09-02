@@ -1,698 +1,314 @@
-# Dictator: Complete Technical Report
+# DICTATOR
 
-## 1. Project Identity
+DICTATOR is a private, browser-first text-to-speech and study application. Paste notes, import a document, or create a listening project, then review the material in small spoken groups with adjustable speed, repetition, language, and pauses.
 
-Dictator is a browser-only dictation and study application. A user pastes or imports study material, creates a local project, divides the material into small word groups, and listens to those groups repeatedly through the browser speech engine.
+The project is a static web application. It has no application backend, accounts, build pipeline, or required installation. Projects and settings stay in the browser unless an optional external parser or speech fallback is used.
 
-The application is intentionally a static website:
+## What It Does
 
-- No backend server is required.
-- No user account is required.
-- No build tool or package manager is required at runtime.
-- Projects are stored locally in IndexedDB.
-- Settings and temporary drafts are stored in localStorage.
-- Speech is produced by the Web Speech API when a compatible browser voice exists.
-- PDF, DOCX, and language detection dependencies are loaded from public CDNs only when their features are used.
+- Turns pasted notes, TXT files, PDFs, and DOCX files into listening sessions.
+- Divides text into selectable groups of 1 to 10 words.
+- Reads groups through the browser Web Speech API.
+- Falls back to online speech audio when no compatible browser voice is available.
+- Highlights the active reading group and supports previous, next, play, pause, and restart controls.
+- Repeats groups from 1 to 10 times.
+- Supports speech speeds from 0.25x to 2x.
+- Supports a configurable pause of 0 to 3.5 seconds between groups and repetitions.
+- Explains meaningful punctuation, symbols, numbers, times, decimals, and fractions for speech without changing visible text.
+- Saves projects locally in IndexedDB and stores settings and drafts in localStorage.
+- Includes a built-in punctuation and symbol demonstration project.
+- Includes a Voice Lab for testing and selecting available browser voices.
+- Supports light, dark, and system themes.
+- Works responsively on desktop, tablet, and mobile browsers.
 
-The project is suitable for opening directly as a static site or deploying to any static host.
-
-## 2. Repository Layout
+## Project Structure
 
 ```text
-DICTATOR/
-├── index.html
-├── README.md
-├── css/
-│   └── styles.css
-└── js/
-		├── app.js
-		├── db.js
-		├── parser.js
-		├── router.js
-		├── tts.js
-		├── ui.js
-		└── voice-lab.js
+DICTATOR.WEB/
+├── index.html                 # SPA shell and metadata
+├── README.md                  # Project documentation
+├── 404.html                   # GitHub Pages deep-link fallback
+├── _redirects                 # Cloudflare Pages SPA rewrite
+├── _headers                   # Static security and cache headers
+├── robots.txt                 # Crawler policy and sitemap location
+├── sitemap.xml                # Public SEO URL inventory
+├── favicon.png
+├── styles.css                 # Complete responsive visual system
+├── app.js                     # Settings, shell controls, and bootstrap
+├── db.js                      # IndexedDB persistence
+├── parser.js                  # Tokenizing, grouping, speech preparation, imports
+├── router.js                  # Dual-mode client-side routing and metadata
+├── tts.js                     # Browser speech and fallback audio controller
+├── ui.js                      # Rendering, translations, forms, and reader UI
+├── voice-lab.js               # Voice selection and preview enhancement
+├── piper-worker.js            # Worker support for the local voice path
+├── fix_routes.py              # One-off maintenance helper for route listeners
+├── blogs/                     # SPA-compatible blog entry page
+├── browser-text-to-speech-reader/
+├── read-pdf-aloud-online/
+├── read-notes-aloud/
+├── student-dictation-tool/
+├── about/
+├── how-to-use/
+├── privacy/
+└── projects/
 ```
 
-### Required files
+The route directories contain static entry pages for crawlers, direct links, and hosts that serve directory indexes. The main application shell remains `index.html`, and `router.js` renders the interactive route views.
 
-- `index.html` is the application shell and script loader.
-- `css/styles.css` defines the complete visual system and responsive layout.
-- `js/db.js` provides IndexedDB persistence.
-- `js/parser.js` handles tokenization, structure detection, grouping, speech preparation, and file extraction.
-- `js/tts.js` manages speech playback, voices, pauses, progress, and fallback audio.
-- `js/ui.js` renders pages, project forms, the demo project, reader controls, translations, and user actions.
-- `js/router.js` maps URL hash routes to UI render functions.
-- `js/app.js` initializes settings, themes, navigation panels, localization, and the router.
-- `js/voice-lab.js` adds voice selection and preview tools.
+## Run Locally
 
-`api/` and `node_modules/` are not required by this repository. The current app has no local API and no Node build pipeline.
+No dependencies need to be installed for the normal application.
 
-## 3. Running the Application
-
-### Direct opening
-
-Open `index.html` in a modern browser. Basic text entry, local projects, and browser speech can work directly from the file system, although browser security rules are more reliable on an HTTP origin.
-
-### Recommended local server
-
-From the project root:
+From this directory, start a static server:
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:8000
 ```
 
-An HTTP origin is recommended because dynamic imports for PDF, DOCX, and language detection are more predictable there.
+An HTTP origin is recommended over opening the file directly because browser security rules are more reliable for dynamic PDF, DOCX, and language-detection imports.
 
-## 4. HTML Application Shell
+## Dual URL Routing
 
-`index.html` contains the stable DOM surfaces that JavaScript fills or controls.
+DICTATOR intentionally supports two URL modes so it is usable on hosts with different static-file behavior.
 
-### Document setup
+### Localhost and GitHub Pages: hash URLs
 
-- `<!doctype html>` enables standards mode.
-- `<html lang="en">` provides an initial accessibility language; `app.js` changes it at runtime when the user selects another UI locale.
-- The viewport meta tag makes the layout responsive on phones.
-- The title is `Dictator`.
-- The early theme script reads saved settings before the page paints, reducing light/dark theme flashing.
+On `localhost`, `127.0.0.1`, and GitHub Pages hostnames, navigation uses hashes:
 
-### Header
-
-The header contains:
-
-- Navigation menu button: opens the mobile/side navigation panel.
-- `DICTATOR` logo button: routes to Home.
-- Desktop navigation buttons: Home, Projects, About, and Help.
-- Settings gear: opens the right-side Settings panel.
-- Theme button: switches between light and dark display modes.
-
-### Application regions
-
-- `#scrim` is the dimmed overlay behind an open side panel.
-- `#page-menu` is the navigation panel.
-- `#settings-panel` is the settings panel.
-- `#app` is the main route-rendered content area.
-- `#toast-region` contains temporary success and error notices.
-- `#modal-region` is reserved for future modal UI.
-
-### Script order
-
-Script order is significant:
-
-1. `db.js` defines persistence functions.
-2. `parser.js` defines token and speech helpers.
-3. `tts.js` defines `window.TTS` and depends on parser functions.
-4. `ui.js` defines `window.UI` and depends on parser, database, TTS, and router names at call time.
-5. `router.js` defines `window.Router` and routes through `window.UI`.
-6. `app.js` initializes the application and connects UI, Router, and TTS.
-7. `voice-lab.js` enhances the Settings panel and reader footer after the core app exists.
-
-The query-string versions on scripts are cache-busting identifiers. Increase the relevant version after changing a browser-loaded JavaScript file if an old bundle appears to be running.
-
-## 5. Data and Persistence: `js/db.js`
-
-`db.js` is the storage layer. It uses IndexedDB database `DictatorDB`, version `2`.
-
-### Database configuration
-
-- Main object store: `projects`, keyed by `id`.
-- Secondary index: `updatedAt`, used conceptually for recency ordering.
-- Secondary index: `name`, available for project-name lookup.
-- Voice store: `voiceModels`, keyed by `key`; it is available for cached voice models even though current playback uses browser voices.
-
-### Promise adapters
-
-- `openDB()` opens the database once and caches the resulting promise.
-- `requestPromise()` converts an IndexedDB request callback into a promise.
-- `transactionPromise()` waits for transaction completion and rejects on error or abort.
-
-These adapters allow the rest of the application to use `async`/`await` instead of nested IndexedDB callbacks.
-
-### Project operations
-
-- `createProject(projectData)` checks the 20-project limit, assigns a UUID, and adds creation/update timestamps.
-- `getProject(id)` reads one project.
-- `updateProject(id, updates)` merges updates into an existing project and refreshes `updatedAt`.
-- `deleteProject(id)` removes a project.
-- `listProjects(limit)` loads all projects, sorts them newest first, and limits the returned list.
-- `getProjectCount()` returns the number of stored projects.
-
-### Voice model operations
-
-- `getVoiceModel(key)` reads a cached voice model record.
-- `saveVoiceModel(model)` writes a voice model record.
-
-The database layer does not know about page rendering or speech scheduling. It only stores and retrieves data.
-
-## 6. Parsing and Grouping: `js/parser.js`
-
-### `MAX_WORDS`
-
-The application imposes no 5,000-word project limit. Very large documents may still be constrained by browser memory, IndexedDB quota, speech-engine limits, or device performance.
-
-### `tokenize(text)`
-
-The current tokenizer trims input and splits on whitespace while preserving punctuation on visible tokens. It does not impose a word-count limit. This keeps visible text, word counts, and stored project content separate from speech-only processing.
-
-### `detectStructure(lines)`
-
-This function identifies structural markers without changing the source text:
-
-- Lines beginning with `# ` become titles.
-- Lines beginning with `## ` become subtitles.
-- Very short isolated lines can become titles.
-- Symbol-only short lines can become titles.
-- A line ending in `:` followed by a blank line can become a subtitle.
-
-The result stores marker type and token index. Group creation later uses those indexes to mark groups as title or subtitle groups.
-
-### `createGroups(tokens, wordsPerGroup, structure)`
-
-This function divides tokens into groups of 1 to 10 words. Each group contains:
-
-- `index`: zero-based group index.
-- `words`: original token array for that group.
-- `rawText`: visible group text joined by spaces.
-- `hasTitle`: whether a title marker falls in the group.
-- `hasSubtitle`: whether a subtitle marker falls in the group.
-- `startTokenIndex` and `endTokenIndex`: original token boundaries.
-
-Grouping is used by both the reader display and TTS scheduling. The speech preparation layer may reinterpret punctuation, but it does not change these stored group boundaries.
-
-### Speech symbol dictionaries
-
-`SPEECH_SYMBOLS` contains localized names for meaningful symbols in seven locales:
-
-- English: `en`
-- Portuguese: `pt`
-- French: `fr`
-- Spanish: `es`
-- German: `de`
-- Italian: `it`
-- Russian: `ru`
-
-Supported symbol families include:
-
-- Social/technical symbols: `@`, `#`, `&`, `|`, `~`, `_`, `^`.
-- Mathematics: `+`, `-`, `×`, `*`, `÷`, `=`, `≠`, `<`, `>`, `≤`, `≥`, `±`, `√`, `∞`.
-- Percent and per-mille: `%`, `‰`.
-- Currency: `$`, `€`, `£`, `¥`, `₹`, `₽`, `₿`, `¢`.
-- Paths and separators: `/`, `\\`, `•`.
-- Arrows: `→`, `←`, `↑`, `↓`, `↔`, `⇒`, `⇐`.
-
-The visible character is kept in the project. The dictionary only supplies the text sent to speech.
-
-### `normalizeSpeechNumbers(value, language)`
-
-This speech-only helper handles common forms before symbol splitting:
-
-- Decimal points become language-appropriate spoken separators.
-- Clock-like values such as `12:07` are transformed into a speech-friendly sequence.
-- Fractions such as `1/2` become language-specific “one over two” forms.
-
-This is intentionally conservative. Ambiguous identifiers and complex date formats should not be aggressively rewritten.
-
-### `prepareSpeechUnits(text, isTitle, isSubtitle, language)`
-
-This is the main speech preparation function. It:
-
-1. Selects the dictionary for the requested language.
-2. Normalizes common numeric forms.
-3. Finds meaningful symbols and punctuation.
-4. Creates separate speech units around those characters.
-5. Gives every spoken symbol a `pauseBefore` value of `300` milliseconds.
-6. Removes unrecognized Unicode symbol/control characters from speech.
-7. Preserves words and ordinary text for speech.
-
-The function returns objects shaped like:
-
-```js
-{ text: 'percent', pauseBefore: 300 }
+```text
+http://localhost:8000/#/projects
+https://account.github.io/DICTATOR/#/projects
 ```
 
-The reader still displays the original raw text. Only speech units are transformed.
+Hash routes do not require the server to understand SPA paths. Reloading a route therefore does not ask a basic static server for a missing `/projects` file.
 
-### `transformForTTS(...)`
+### Cloudflare Pages and custom domains: clean URLs
 
-This compatibility helper joins prepared unit text into one string. The active TTS path uses `prepareSpeechUnits()` directly so it can honor pause metadata.
+On Cloudflare Pages and other non-local, non-GitHub hosts, navigation uses clean paths:
 
-### File extraction
+```text
+https://dictator.app/projects
+https://dictator.app/blogs/read-pdf-aloud-online
+```
 
-- `extractTXT(file)` uses the browser File API.
-- `extractPDF(arrayBuffer)` dynamically imports `pdfjs-dist` from jsDelivr, configures its worker, and extracts page text.
-- `extractDOCX(arrayBuffer)` lazily loads Mammoth's browser bundle from jsDelivr and extracts raw DOCX text. The browser bundle is used instead of Mammoth's ESM entry because the latter can fail in browser dependency resolution.
-- `detectLanguage(text)` dynamically imports `franc-min` and maps ISO-like detection results to the seven supported speech languages.
+When a visitor arrives with a legacy hash URL such as `#/projects`, the router automatically replaces it with `/projects` on a clean-URL host. This keeps the final deployment canonical and removes the hash from the address bar.
 
-Imported libraries are loaded lazily, so the initial app does not need them.
+### Why both modes exist
 
-## 7. Speech Engine: `js/tts.js`
+The URL mode is selected by `router.js`:
 
-`tts.js` exposes `window.TTS`, a stateful controller for the current reader project.
+- Localhost and GitHub Pages use `location.hash`.
+- Cloudflare Pages and custom domains use `history.pushState` and `location.pathname`.
+- All modes render the same UI and route names.
 
-### Voice selection
+The browser router cannot by itself prevent a server from returning a 404 before JavaScript loads. The hosting fallback files are therefore part of the routing design.
 
-The controller reads voices from `speechSynthesis.getVoices()` and ranks them by:
+## Hosting Configuration
 
-- Exact language match.
-- Locale prefix match, such as `en-US` for `en`.
-- Preferred voice-family patterns such as online natural, neural, enhanced, or known platform voices.
-- Remote/cloud hints when exposed by browser metadata.
-- Default voice status.
-- Penalties for common legacy or undesirable voice names.
+### GitHub Pages
 
-Voice lists are asynchronous. The `voiceschanged` event can cause the Voice Lab and reader voice list to refresh.
+Keep `404.html` at the published site root. When GitHub Pages cannot find a deep route, the fallback stores the requested path and redirects to a hash route such as:
 
-### Saved voice
+```text
+/DICTATOR/#/privacy
+```
 
-`savedVoice()` reads `voiceURI` from localStorage. `selectVoice(voiceURI)` updates that setting. A saved voice is reused when it matches the active language.
+The router restores and renders that route after `index.html` loads. The repository deployment path is currently `/DICTATOR`; change the `base` value in `404.html` and the GitHub Pages base-path logic in `router.js` if the repository name changes.
 
-### Preview methods
+### Cloudflare Pages
 
-- `previewVoice(voice, speed, text)` creates a `SpeechSynthesisUtterance`, assigns the voice and language, and speaks it.
-- `previewLanguage(language, speed, text)` tries a matching browser voice first and otherwise creates an online fallback audio request.
-- `fallbackAudioUrl(text, language)` constructs the Google Translate TTS URL using the selected language code.
+The `_redirects` file contains:
 
-### Project lifecycle
+```text
+/* /index.html 200
+```
 
-- `load(project)` clears previous playback, stores the active project, selects a compatible voice, and synchronizes UI state.
-- `clear()` cancels timers, browser speech, and fallback audio while advancing a generation counter to invalidate old callbacks.
-- `stop()` clears playback and removes the active project.
-- `restart()` resets group and repetition progress.
+This is a rewrite, not a browser redirect. Cloudflare serves the application shell for a clean route while keeping the requested URL visible. `router.js` then renders the correct page.
 
-### Speech state
+### Headers
 
-The controller uses states including:
+`_headers` applies baseline static-host protections and caching:
 
-- `idle`
-- `loading`
-- `playing`
-- `between_groups`
-- `between_repeats`
-- `paused`
-- `finished`
+- Denies framing with `X-Frame-Options: DENY`.
+- Enables `X-Content-Type-Options: nosniff`.
+- Uses a strict-origin-when-cross-origin referrer policy.
+- Caches normal files for one hour and `/assets/*` for one year when that directory is used.
 
-The UI reads this state to highlight the current group, update the status line, and change the Play button behavior.
+## Routes and SEO Pages
 
-### Browser speech flow
+The application supports these route names:
 
-When playback begins:
+| Route | Purpose |
+| --- | --- |
+| `/` | Home writing and import workspace |
+| `/projects` | Local project library |
+| `/project/<id>` | Reader for a saved project or the demo project |
+| `/edit/<id>` | Edit a saved project through the Home editor |
+| `/blogs` | Blog and product-guide index |
+| `/blogs/browser-text-to-speech-reader` | Browser text-to-speech reader guide |
+| `/blogs/read-pdf-aloud-online` | PDF listening guide |
+| `/blogs/read-notes-aloud` | Note-listening and revision guide |
+| `/blogs/student-dictation-tool` | Student dictation and study guide |
+| `/about` | Product purpose and local-first design |
+| `/how-to-use` | Workflow instructions and FAQ content |
+| `/privacy` | Storage, network, and privacy explanation |
 
-1. The active group is selected.
-2. `prepareSpeechUnits()` creates localized speech units.
-3. Before each unit with `pauseBefore`, the controller waits 300ms.
-4. Each unit becomes its own `SpeechSynthesisUtterance`.
-5. The selected voice and project speech language are assigned.
-6. The next unit begins after the current utterance emits `onend`.
-7. When the group finishes, progress advances or repetition scheduling begins.
+The four blog pages are SEO-oriented product pages, not placeholder articles. Each has a localized title, introduction, use cases, workflow, FAQ section, and call to the main tool. The blog index links to all four pages.
 
-Splitting units is important because a browser speech engine may not audibly announce a raw character such as `@` or `,`. The localized word, such as “at”, “arroba”, or “arobase”, is much more reliably spoken.
+The router updates document metadata for the active route, including:
 
-### Online fallback flow
+- Page title.
+- Description and keyword metadata.
+- Open Graph title, description, and URL.
+- Twitter title and description.
+- Canonical URL.
+- FAQ structured data for the Home and blog intent pages.
 
-If no matching browser voice is available, each prepared unit is requested as separate fallback audio. The same 300ms pre-symbol pause is applied between units. Playback errors are reported through the UI toast system.
+The public SEO files complement the runtime metadata:
 
-### Configurable group pause
+- `sitemap.xml` lists Home, Blogs, all four blog pages, About, Projects, Help, and Privacy.
+- `robots.txt` permits crawling and points crawlers to the sitemap.
+- `index.html` contains WebApplication structured data and social metadata.
 
-The pause between groups and repetitions is controlled by `project.config.pauseDuration` when present, otherwise by the saved global `defaultPauseDuration` setting.
+The application interface and blog content support seven locales: English (`en`), Portuguese (`pt`), French (`fr`), Spanish (`es`), German (`de`), Italian (`it`), and Russian (`ru`).
 
-- Minimum: `0` seconds.
-- Maximum: `3.5` seconds.
-- Default: `0.8` seconds.
-- Stored internally in seconds and converted to milliseconds for `setTimeout`.
+## Main User Workflow
 
-This is separate from the 300ms symbol pause and separate from speech rate.
+1. Open Home and paste text or choose TXT, PDF, or DOCX.
+2. Review the word count and source information.
+3. Choose Start to create a local project.
+4. Allow automatic language detection or select a default speech language.
+5. Use the reader controls to change group size, repetitions, speed, pause, or voice.
+6. Play the session and click a visible group to jump to it.
+7. Return to Projects to reopen, rename, or delete saved sessions.
 
-### Reader controls
+Draft text is periodically saved locally while it is being edited. A draft is restored when the Home editor is reopened and is removed after a project is successfully saved.
 
-`configChange(key, value)` handles:
+## Reader and Speech Behavior
 
-- `wordsPerGroup`: rebuilds groups and resets progress.
-- `repetitions`: changes repeat count.
-- `speed`: changes utterance rate.
-- `pauseDuration`: changes the group/repetition pause.
-- `language`: changes the project speech language and selects a matching voice.
+`parser.js` separates visible text from speech preparation. The application keeps the original project text and group boundaries intact while creating speech-only units.
 
-Non-demo projects persist configuration changes to IndexedDB. The built-in demo is generated in memory and is never stored.
+Speech preparation includes:
 
-## 8. UI Rendering: `js/ui.js`
+- Heading and subtitle detection from Markdown-like lines.
+- Localized names for symbols such as `@`, `#`, `%`, `+`, `=`, arrows, currencies, and mathematical operators.
+- Conservative handling of decimal numbers, clock-like values, and fractions.
+- A 300 ms pause before each spoken symbol or punctuation unit.
+- Removal of unsupported symbol/control characters from speech without removing them from the visible reader.
 
-`ui.js` owns the visible application experience. It renders HTML strings into `#app`, binds event handlers, and delegates persistence or playback to other modules.
+The browser voice controller ranks compatible voices by language, locale, natural-voice hints, local/remote availability, and saved voice preference. Voice lists may arrive asynchronously through `voiceschanged`.
 
-### Translation system
+If a compatible browser voice is unavailable, the optional fallback audio path can request speech from the configured external TTS URL. This requires network access and has different privacy characteristics from local browser speech.
 
-The `UI_TEXT` registry contains page strings for the seven UI locales. `getUiLanguage()` reads `settings.uiLanguage`, resolves `auto` through `DictatorI18n`, and falls back to English. `t(key, fallback)` retrieves a localized value, falling back to English if a key is missing.
+## Settings and Localization
 
-The UI language is deliberately separate from the project speech language. A user can read the interface in French while a project speaks Portuguese, for example.
-
-### Home page
-
-`renderHome(editId)` renders:
-
-- Hero label and heading.
-- Description of the listening session.
-- Recent project list.
-- Project count.
-- Text input area.
-- Word counter.
-- TXT/PDF/DOCX file picker.
-- Drag-and-drop area.
-- Start or Save button.
-- Local privacy note.
-
-`bindHome()` restores drafts, updates the word counter, saves draft content to localStorage, binds file import, handles drag-and-drop, and creates or updates projects.
-
-New projects inherit default group size, repetitions, speed, language, theme, and pause duration from settings.
-
-### Projects page
-
-`renderProjects()` displays:
-
-- Library heading and description.
-- New project action.
-- Built-in demo project card.
-- User project cards.
-- Open, Rename, and Delete actions.
-- Empty state when no user projects exist.
-- Storage usage progress toward the 20-project limit.
-
-Rename uses a browser prompt. Delete uses a browser confirmation dialog. These are deliberately simple MVP interactions.
-
-### Reader page
-
-`renderProject(id)` loads a stored project or generates the demo. It renders:
-
-- Back link.
-- Demo or Reader View label.
-- Project title.
-- Text content with title/subtitle styling.
-- Previous, Play, and Next controls.
-- Words-per-group selector.
-- Repetitions selector.
-- Speed slider and number input.
-- Project speech-language selector.
-- Configurable pause slider and number input.
-- Voice selector and Preview action.
-- Restart button.
-- Playback status.
-
-`bindReaderGroups()` makes each visible word group clickable so the user can jump to it.
-
-### Built-in demo
-
-`demoProject()` provides a punctuation and symbol stress test called “The Clockmaker's Last Light”. The demo includes headings, punctuation, times, quotation marks, symbols, numbers, and repeated prose. Its story, title, source label, and speech language are localized according to the active UI language.
-
-The demo is regenerated in memory on every route render. It does not consume the 20-project storage limit and is not written to IndexedDB.
-
-### Static pages
-
-- `renderAbout()` explains the learning purpose and local privacy model.
-- `renderHowToUse()` explains the workflow and includes expandable FAQ items.
-- `renderPrivacy()` explains storage, browser speech, optional CDN libraries, and data removal.
-
-### Utility behavior
-
-- `toast(message, type)` creates temporary success or danger notices.
-- `countText()` updates the word count and disables Start when empty or over limit.
-- `sourceMarkup()` creates import controls.
-- `loadFile()` selects the proper parser based on file extension.
-- `refreshReader()` rebuilds reader content after grouping changes.
-- `updateReaderState()` updates active word groups, status text, and playback button labels.
-
-## 9. Routing: `js/router.js`
-
-The router uses `location.hash` instead of a server-side URL system.
-
-Examples:
-
-- `#/` or `#/` with an empty path: Home.
-- `#/projects`: Projects list.
-- `#/project/<id>`: Reader page.
-- `#/edit/<id>`: Home editor for an existing project.
-- `#/about`: About page.
-- `#/how-to-use`: How to use page.
-- `#/privacy`: Privacy page.
-
-`navigate(value)` writes the hash. `handle()` reads the hash, stops speech outside reader routes, and calls the matching UI renderer. `init()` registers the `hashchange` listener and performs the first render.
-
-## 10. Application Bootstrap: `js/app.js`
-
-`app.js` owns global settings and shell behavior.
-
-### Settings defaults
-
-The defaults include:
+Settings are stored under `dictator_settings` in localStorage. Defaults are:
 
 ```js
 {
-	uiLanguage: 'auto',
-	defaultDictationLang: 'auto',
-	defaultWordsPerGroup: 6,
-	defaultRepetitions: 2,
-	defaultSpeed: 0.9,
-	defaultPauseDuration: 0.8,
-	theme: 'system'
+  uiLanguage: 'auto',
+  defaultDictationLang: 'auto',
+  defaultWordsPerGroup: 6,
+  defaultRepetitions: 2,
+  defaultSpeed: 0.9,
+  defaultPauseDuration: 0.8,
+  theme: 'system'
 }
 ```
 
-### UI locale resolution
+The interface language and project speech language are independent. For example, the UI can be French while a project is spoken in Portuguese.
 
-- `getSystemUiLanguage()` reads `navigator.language` or the first `navigator.languages` value.
-- `resolveUiLanguage(value)` resolves `auto`, validates supported locales, and falls back to English.
-- `applyUiLanguage()` writes the resolved locale to `document.documentElement.lang` and `data-ui-language`.
+The translation registry covers navigation, settings, Home SEO copy, project management, reader controls, static pages, blog pages, and the localized built-in demo. Missing keys intentionally fall back to English.
 
-### Theme
+## Storage Model
 
-`applyTheme(theme)` supports light, dark, and system preference behavior. The initial inline script in `index.html` applies a first-paint theme; `app.js` applies the final state and changes the theme icon.
+`db.js` uses IndexedDB database `DictatorDB` version 2.
 
-### Side panels
+- `projects` stores saved project records and progress.
+- `voiceModels` is available for cached voice-model records.
+- Saved projects are normalized when read so older records receive current defaults and derived groups.
+- The application allows up to 20 saved projects.
+- The built-in demo is generated in memory and does not consume the project limit.
 
-`panel(id, open)` toggles the panel class, updates `aria-hidden`, and controls the scrim. The navigation and Settings panels are populated dynamically so their labels can be translated.
+The visible text, tokens, structure, groups, progress, source metadata, image data, and reader configuration are kept separate so speech improvements do not rewrite the user's content.
 
-### Settings controls
+## Privacy and Network Model
 
-The right-side Settings panel contains:
+Normal project creation, storage, and browser speech happen on the user's device. DICTATOR has no application server and does not require an account.
 
-- UI language selector.
-- Default dictation language selector.
-- Words per group selector.
-- Repetitions selector.
-- Speed slider and numeric input.
-- Pause-between-groups slider and numeric input.
-- Voice Lab.
+Network requests may occur when:
 
-The UI language choice reloads the page so every module initializes consistently in the new locale. The pause setting is saved in localStorage and is used as the fallback for new or older projects without a project-specific pause value.
+- PDF.js is loaded from jsDelivr for PDF extraction.
+- Mammoth is loaded from jsDelivr for DOCX extraction.
+- `franc-min` is loaded from jsDelivr for automatic language detection.
+- The browser has no compatible voice and the online speech fallback is used.
 
-## 11. Voice Lab: `js/voice-lab.js`
+For the most private and offline-friendly workflow, use TXT input with an installed browser voice. Clearing the site's browser storage removes local projects, drafts, settings, and saved voice preferences.
 
-Voice Lab is an enhancement layer, not the owner of the main reader speech pipeline.
+## Accessibility and Responsive Design
 
-It provides:
+- Native buttons, inputs, selects, labels, and links are used for controls.
+- Side panels expose `aria-hidden` state and close through the scrim or Escape.
+- Toast messages use an `aria-live` region.
+- The document language follows the selected UI locale.
+- Reader controls remain keyboard-operable.
+- Focus-visible outlines are styled in the application theme.
+- The fixed reader footer receives responsive spacing on small screens.
+- Reduced-motion preferences are respected in the stylesheet.
 
-- Test-language selection.
-- Compatible voice list.
-- Voice URI persistence.
-- Preview action.
-- Refresh voices action.
-- Voice availability status.
+## Browser Limitations
 
-It listens for browser `voiceschanged` events and observes relevant DOM changes so the tool can appear after Settings opens or after a reader route is rendered.
+- Speech voice availability depends on the browser and operating system.
+- Voices may load asynchronously or differ between local and hosted environments.
+- Some browsers require a user interaction before speech playback.
+- Mobile browsers may pause speech when a tab is backgrounded or the screen locks.
+- PDF, DOCX, language detection, and online fallback speech need network access.
+- Browser storage quotas vary by device and browser.
+- Text grouping is whitespace-based rather than a full linguistic segmentation system.
+- Cloud synchronization, accounts, exports, and advanced CJK segmentation are not currently included.
 
-The reader footer also receives a voice selector and Preview button for the active project language.
+## Validation Checklist
 
-## 12. Visual Design and CSS
+Because the project has no build step or automated test runner, validate changes in a browser and with syntax checks:
 
-`css/styles.css` is a single stylesheet with a base design layer and a later mockup-aligned application layer.
+```bash
+node --check app.js
+node --check db.js
+node --check parser.js
+node --check router.js
+node --check tts.js
+node --check ui.js
+node --check voice-lab.js
+```
 
-### Design direction
+Then verify:
 
-The final visual language is calm, editorial, and study-focused:
+1. Home loads at `http://localhost:8000`.
+2. Local navigation creates `/#/...` URLs and reloads safely.
+3. A GitHub Pages deep link is recovered through `404.html`.
+4. A Cloudflare clean route is rewritten to `index.html` and renders correctly after reload.
+5. A legacy Cloudflare hash URL is converted to a clean URL.
+6. Blog routes, canonical metadata, FAQ schema, sitemap entries, and localized copy are present.
+7. TXT, PDF, and DOCX imports work when their external libraries can load.
+8. The demo speaks with symbols, punctuation, repetition, group pauses, and all supported speech languages.
+9. Settings, drafts, projects, themes, and voice preferences persist after reload.
+10. The browser console contains no runtime exceptions.
 
-- Neutral gray and white surfaces.
-- Teal accent color for actions, focus, progress, and active speech groups.
-- Serif body typography for reading and study content.
-- Trebuchet-style controls for compact UI labels.
-- Thin borders and restrained shadows.
-- Small radius values for practical controls and cards.
-- Strong whitespace around reading content.
-- Responsive layouts that collapse into one column on small screens.
+## Maintenance Notes
 
-### CSS variables
-
-The stylesheet defines variables for backgrounds, surfaces, elevated surfaces, primary/secondary/muted text, accent colors, borders, danger/warning/success colors, and shadows. Dark mode replaces these variables under `[data-theme="dark"]`.
-
-There are two variable declarations because the later “Mockup-aligned application surfaces” block intentionally refines the initial theme palette. The later values are the effective final values in the cascade.
-
-### Header and panels
-
-- `.app-header` creates the top shell.
-- `.desktop-nav` handles wide-screen navigation.
-- `.side-panel` creates sliding left and right panels.
-- `.scrim` blocks and dims the page behind an open panel.
-- `.panel-header`, `.nav-link`, and `.setting` define panel internals.
-
-### Home and forms
-
-- `.hero` centers the main task message.
-- `.input-box` creates the writing surface.
-- `.file-zone` divides import actions.
-- `.start-button` creates the primary action.
-- `.recent-panel` shows recent local work.
-- `.counter.warning` and `.counter.danger` communicate word-limit pressure.
-
-### Projects
-
-- `.project-list` constrains the library width.
-- `.project-card` creates repeated project rows.
-- `.card-actions` supports responsive action wrapping.
-- `.storage` and `.progress` communicate the 20-project capacity.
-
-### Reader
-
-- `.reader-shell` provides the long-form reading surface.
-- `.reader-title`, `.reader-subtitle`, and `.reader-paragraph` distinguish structure.
-- `.word-group` is clickable and receives the active teal highlight during playback.
-- `.dictation-footer` is fixed to the viewport bottom.
-- `.speed-control` styles the speed and pause slider/number pairs.
-
-### Responsive behavior
-
-- At 768px and below, desktop navigation disappears and page headings/cards stack.
-- At 480px and below, panels become narrower, file actions stack, controls shrink, and the reader receives extra bottom padding for the fixed footer.
-- `prefers-reduced-motion: reduce` disables transitions.
-- Focus-visible outlines use the accent color for keyboard accessibility.
-
-## 13. User Workflows
-
-### Create a project
-
-1. Open Home.
-2. Paste text or import TXT, PDF, or DOCX.
-3. Review the word count.
-4. Press Start to dictate.
-5. The app detects or uses the default speech language.
-6. The project is written to IndexedDB.
-7. The reader route opens.
-
-### Read and repeat
-
-1. The current group is highlighted.
-2. Press Play.
-3. Browser speech reads prepared units.
-4. Meaningful symbols receive localized names.
-5. A 300ms pause occurs before each spoken symbol or punctuation name.
-6. After the group, the configurable pause occurs.
-7. The group repeats or the reader advances.
-8. Progress is persisted for stored projects.
-
-### Change language
-
-- UI language is changed from the gear and affects frontend labels and localized demo content.
-- Dictation language is changed in the default Settings selector or reader language selector and affects speech voice/language.
-- These settings are independent.
-
-### Change pause timing
-
-- Top-right Settings controls the saved default.
-- Reader footer controls the active project.
-- Both use a synchronized slider and numeric input.
-- Values range from `0` to `3.5` seconds.
-- The default is `0.8` seconds.
-
-## 14. Accessibility and Semantics
-
-- Buttons and form controls use native HTML controls.
-- Side panels expose `aria-hidden` state.
-- The toast region uses `aria-live="polite"`.
-- Inputs have labels or accessible labels.
-- Focus-visible outlines are explicitly styled.
-- The document language is updated when UI locale changes.
-- The fixed reader footer remains keyboard-operable.
-
-The application still has areas for improvement: some icon-only labels rely on `aria-label`, browser dialogs are native, and the demo content itself is not translated by machine translation at runtime; it uses authored locale variants.
-
-## 15. Network and Privacy Model
-
-Normal project creation and reading are local. The app does not send notes to an application server.
-
-Network requests can occur when:
-
-- PDF extraction loads `pdfjs-dist` from jsDelivr.
-- DOCX extraction loads Mammoth from jsDelivr.
-- Language detection loads `franc-min` from jsDelivr.
-- No browser voice is available and the online fallback TTS URL is used.
-
-Users should understand that imported-library CDNs and online speech fallback are external services. For completely offline use, use TXT input and an installed browser speech voice.
-
-## 16. Browser and Platform Limitations
-
-- Voice availability depends on the browser and operating system.
-- The browser may expose legacy voices instead of cloud or neural voices.
-- Voice lists arrive asynchronously.
-- Some browsers require an interaction before speech can begin.
-- Mobile browsers may stop speech when the tab is backgrounded or the screen locks.
-- Online fallback speech requires network access.
-- The 20-project limit is enforced in the application layer.
-- The tokenizer is whitespace-based and is not a full linguistic segmenter.
-- Number normalization is intentionally conservative.
-- Cloud sync, accounts, project export, and advanced CJK segmentation are outside the current scope.
-
-## 17. Validation Checklist
-
-For a future AI or maintainer, validate changes in this order:
-
-1. Run `node --check` on every JavaScript file.
-2. Use `http://localhost:8000` rather than relying only on a file URL.
-3. Reload Home and confirm `window.UI`, `window.Router`, and `window.TTS` exist.
-4. Open Settings and verify the pause default is `0.8`.
-5. Open the demo reader and verify the footer pause control is present with a `0–3.5` range.
-6. Change the pause to `0`, `1.2`, and `3.5`; verify the numeric and range controls stay synchronized.
-7. Test all seven UI locales: `en`, `pt`, `fr`, `es`, `de`, `it`, and `ru`.
-8. Test all seven speech locales with `@`, `#`, `%`, `+`, `=`, punctuation, decimals, times, and fractions.
-9. Verify every spoken symbol unit has a 300ms pre-symbol pause.
-10. Verify group and repetition transitions use the configured pause duration.
-11. Verify the visible project text and word grouping do not change during speech preparation.
-12. Check the browser console for runtime exceptions, not only syntax errors.
-
-## 18. Maintenance Rules
-
-- Keep UI language and dictation language separate.
-- Do not alter stored visible text when improving speech pronunciation.
-- Add new translation keys to every supported locale or provide an intentional fallback.
-- Keep speech symbol dictionaries language-specific.
-- Preserve the 20-project limit unless the storage contract changes.
-- Update script cache versions after browser-loaded JavaScript changes.
-- Keep dynamic CDN imports lazy.
-- Prefer small, focused changes because the app has no build step or automated test runner.
-- Update this README when behavior, routes, storage, browser requirements, or controls change.
-
-## 19. Current Feature Summary
-
-Dictator currently includes:
-
-- Local dictation projects.
-- Home writing and import surface.
-- TXT, PDF, and DOCX import.
-- Automatic or manually selected speech language.
-- Seven localized frontend languages.
-- Seven localized demo project variants.
-- Browser voice ranking and selection.
-- Voice Lab preview tooling.
-- Clickable reader groups.
-- Adjustable group size from 1 to 10 words.
-- Adjustable repetitions from 1 to 10.
-- Adjustable speech speed from 0.25x to 2x.
-- Adjustable group/repetition pause from 0 to 3.5 seconds.
-- Default pause of 0.8 seconds.
-- Localized audible symbols and punctuation.
-- 300ms pause before spoken symbols.
-- Natural handling for common decimals, times, and fractions.
-- Local IndexedDB persistence.
-- Local draft recovery.
-- Light, dark, and system theme behavior.
-- Responsive desktop and mobile layouts.
+- Keep UI language separate from project speech language.
+- Add new translation keys to every locale or provide an intentional fallback.
+- Preserve visible text and stored group boundaries when changing speech preparation.
+- Keep `404.html`, `_redirects`, `robots.txt`, and `sitemap.xml` synchronized with deployment and public routes.
+- Update canonical and structured metadata when adding SEO pages.
+- Increment the query-string version on a browser-loaded script after changing it if a deployment serves stale cached code.
+- Keep PDF, DOCX, and language-detection imports lazy.
+- Test both hash and clean URL modes after routing changes.
+- Do not commit user-generated projects or browser storage data; they belong to the local browser profile.

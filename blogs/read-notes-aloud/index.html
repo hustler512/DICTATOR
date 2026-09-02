@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Read Notes Aloud in Browser | DICTATOR</title>
+  <meta name="description" content="Read notes aloud in your browser and turn revision material into spoken audio for faster retention, focus, and study sessions.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://dictator.app/blogs/read-notes-aloud">
+  <meta property="og:title" content="Read Notes Aloud in Browser | DICTATOR">
+  <meta property="og:description" content="Improve memory and retention by listening to your notes instead of only reading them in a focused browser workflow.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dictator.app/blogs/read-notes-aloud">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <button class="icon-button" id="menu-toggle" aria-label="Open navigation menu">☰</button>
+    <button class="logo" id="home-link" aria-label="Go to Home">DICTATOR</button>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <button data-route="/">Home</button>
+      <button data-route="/projects">Projects</button>
+      <button data-route="/blogs">BLOGS</button>
+      <button data-route="/about">About</button>
+      <button data-route="/how-to-use">Help</button>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-button" id="settings-toggle" aria-label="Open settings">⚙</button>
+      <button class="icon-button" id="theme-toggle" aria-label="Toggle theme">☾</button>
+    </div>
+  </header>
+
+  <div class="scrim" id="scrim" hidden></div>
+  <aside class="side-panel side-panel-left" id="page-menu" aria-label="Page navigation" aria-hidden="true">
+    <div class="panel-header"><strong>Navigate</strong><button class="icon-button" data-close>×</button></div>
+    <button class="nav-link" data-route="/" data-i18n="navHome">Home</button>
+    <button class="nav-link" data-route="/projects" data-i18n="navProjects">Projects</button>
+    <button class="nav-link" data-route="/blogs" data-i18n="navBlogs">BLOGS</button>
+    <button class="nav-link" data-route="/blogs/browser-text-to-speech-reader" data-i18n="navBrowserReader">Browser reader</button>
+    <button class="nav-link" data-route="/blogs/read-pdf-aloud-online" data-i18n="navPdf">Read PDF</button>
+    <button class="nav-link" data-route="/blogs/read-notes-aloud" data-i18n="navNotes">Read notes</button>
+    <button class="nav-link" data-route="/blogs/student-dictation-tool" data-i18n="navStudent">Student tool</button>
+    <button class="nav-link" data-route="/about" data-i18n="navAbout">About</button>
+    <button class="nav-link" data-route="/how-to-use" data-i18n="navHelp">How to use</button>
+    <button class="nav-link" data-route="/privacy" data-i18n="navPrivacy">Privacy</button>
+  </aside>
+
+  <aside class="side-panel side-panel-right" id="settings-panel" aria-label="Settings" aria-hidden="true">
+    <div class="panel-header"><strong>Settings</strong><button class="icon-button" data-close>×</button></div>
+    <label class="setting">Theme<select id="setting-theme"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></label>
+    <label class="setting">UI language<select id="ui-language"><option value="auto">Auto</option><option value="pt">PT</option><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option><option value="it">IT</option><option value="ru">RU</option></select></label>
+    <label class="setting">Default language<select id="default-language"><option value="auto">Auto</option><option value="pt">PT</option><option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option><option value="it">IT</option><option value="ru">RU</option></select></label>
+    <label class="setting">Words per group<select id="words-per-group"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+    <label class="setting">Repetitions<select id="repetitions"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></label>
+    <label class="setting speed-setting">Speed <input id="speed-range" type="range" min="0.25" max="2" step="0.05" value="0.9"><input id="speed-value" type="number" min="0.25" max="2" step="0.05" value="0.9" aria-label="Default speed value"><span>x</span></label>
+    <label class="setting speed-setting">Pause between groups<input id="pause-range" type="range" min="0" max="3.5" step="0.1" value="0.8"><input id="pause-value" type="number" min="0" max="3.5" step="0.1" value="0.8" aria-label="Pause duration in seconds"><span>s</span></label>
+  </aside>
+
+  <main class="app-main">
+    <div class="page">
+      <div class="static-content">
+        <div class="eyebrow" data-i18n="eyebrow">DICTATOR</div>
+        <h1 data-i18n="title">Read Notes Aloud in Browser</h1>
+        <p data-i18n="intro">Improve memory and retention by listening to your notes instead of only reading them. DICTATOR helps you turn key ideas into a spoken review session.</p>
+        <section>
+          <h2 data-i18n="why">Why people use it</h2>
+          <ul>
+            <li data-i18n="reason1">Paste your class notes or writing drafts into the tool.</li>
+            <li data-i18n="reason2">Listen in short, focused groups to improve comprehension.</li>
+            <li data-i18n="reason3">Repeat difficult sections without re-reading everything manually.</li>
+          </ul>
+        </section>
+        <section>
+          <h2 data-i18n="how">How it works</h2>
+          <ol>
+            <li data-i18n="step1">Paste or upload your notes.</li>
+            <li data-i18n="step2">Choose a group size and reading pace.</li>
+            <li data-i18n="step3">Listen, repeat, and revise with more focus.</li>
+          </ol>
+        </section>
+        <section>
+          <h2 data-i18n="faq">Frequently asked questions</h2>
+          <div class="faq-item"><button class="faq-question" data-i18n="q1">Why would I read notes aloud?</button><div class="faq-answer"><p data-i18n="a1">Reading aloud can reduce visual fatigue, improve focus, and help you retain information by combining listening and repetition.</p></div></div>
+          <div class="faq-item"><button class="faq-question" data-i18n="q2">Can I use it while commuting or walking?</button><div class="faq-answer"><p data-i18n="a2">Yes. It is designed for quick revision sessions in a browser and can be especially useful on phones and tablets.</p></div></div>
+          <div class="faq-item"><button class="faq-question" data-i18n="q3">What types of notes work well?</button><div class="faq-answer"><p data-i18n="a3">Class notes, summaries, revision scripts, personal reminders, and reading passages all work well.</p></div></div>
+        </section>
+        <section>
+          <h2 data-i18n="startTitle">Start reading today</h2>
+          <p data-i18n="startCopy">Use DICTATOR to turn notes and study material into a more focused listening workflow.</p>
+          <p><a href="/" class="button primary-link" data-i18n="tryTool">Try the tool</a> <a href="/blogs" class="button primary-link" data-i18n="backBlogs">Back to BLOGS</a></p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const pageMenu = document.querySelector('#page-menu');
+      const settingsPanel = document.querySelector('#settings-panel');
+      const scrim = document.querySelector('#scrim');
+      const themeToggle = document.querySelector('#theme-toggle');
+      const themeSelect = document.querySelector('#setting-theme');
+      const uiSelect = document.querySelector('#ui-language');
+      const defaultSelect = document.querySelector('#default-language');
+      const wordsSelect = document.querySelector('#words-per-group');
+      const repsSelect = document.querySelector('#repetitions');
+      const speedRange = document.querySelector('#speed-range');
+      const speedValue = document.querySelector('#speed-value');
+      const pauseRange = document.querySelector('#pause-range');
+      const pauseValue = document.querySelector('#pause-value');
+      const defaults = { uiLanguage:'auto', defaultDictationLang:'auto', defaultWordsPerGroup:6, defaultRepetitions:2, defaultSpeed:0.9, defaultPauseDuration:0.8, theme:'system' };
+      const translations = {
+        en: { navHome:'Home', navProjects:'Projects', navBlogs:'BLOGS', navAbout:'About', navHelp:'How to use', navPrivacy:'Privacy', navBrowserReader:'Browser reader', navPdf:'Read PDF', navNotes:'Read notes', navStudent:'Student tool', eyebrow:'DICTATOR', title:'Read Notes Aloud in Browser', intro:'Improve memory and retention by listening to your notes instead of only reading them. DICTATOR helps you turn key ideas into a spoken review session.', why:'Why people use it', reason1:'Paste your class notes or writing drafts into the tool.', reason2:'Listen in short, focused groups to improve comprehension.', reason3:'Repeat difficult sections without re-reading everything manually.', how:'How it works', step1:'Paste or upload your notes.', step2:'Choose a group size and reading pace.', step3:'Listen, repeat, and revise with more focus.', faq:'Frequently asked questions', q1:'Why would I read notes aloud?', a1:'Reading aloud can reduce visual fatigue, improve focus, and help you retain information by combining listening and repetition.', q2:'Can I use it while commuting or walking?', a2:'Yes. It is designed for quick revision sessions in a browser and can be especially useful on phones and tablets.', q3:'What types of notes work well?', a3:'Class notes, summaries, revision scripts, personal reminders, and reading passages all work well.', startTitle:'Start reading today', startCopy:'Use DICTATOR to turn notes and study material into a more focused listening workflow.', tryTool:'Try the tool', backBlogs:'Back to BLOGS', settings:'Settings', theme:'Theme', uiLanguage:'UI language', defaultLanguage:'Default language', wordsPerGroup:'Words per group', repetitions:'Repetitions', speed:'Speed', pause:'Pause between groups', auto:'Auto' },
+        pt: { navHome:'Início', navProjects:'Projetos', navBlogs:'BLOGS', navAbout:'Sobre', navHelp:'Como usar', navPrivacy:'Privacidade', navBrowserReader:'Leitor do navegador', navPdf:'Ler PDF', navNotes:'Ler notas', navStudent:'Ferramenta do aluno', eyebrow:'DICTATOR', title:'Ler notas em voz alta no navegador', intro:'Melhore a memória e a retenção ouvindo suas notas em vez de apenas ler. O DICTATOR ajuda a transformar ideias-chave em uma sessão de revisão falada.', why:'Por que as pessoas usam', reason1:'Cole suas anotações de aula ou rascunhos na ferramenta.', reason2:'Ouça em grupos curtos e focados para melhorar a compreensão.', reason3:'Repita trechos difíceis sem reler tudo manualmente.', how:'Como funciona', step1:'Cole ou carregue suas notas.', step2:'Escolha o tamanho do grupo e o ritmo da leitura.', step3:'Ouça, repita e revise com mais foco.', faq:'Perguntas frequentes', q1:'Por que ler notas em voz alta?', a1:'A leitura em voz alta reduz fadiga visual, melhora o foco e ajuda a reter informações ao combinar audição e repetição.', q2:'Posso usar enquanto viajo ou caminho?', a2:'Sim. Foi pensado para sessões rápidas de revisão no navegador e pode ser útil em telefones e tablets.', q3:'Que tipos de notas funcionam bem?', a3:'Anotações de aula, resumos, roteiros de revisão, lembretes pessoais e textos de leitura funcionam bem.', startTitle:'Comece a ler hoje', startCopy:'Use o DICTATOR para transformar notas e material de estudo em um fluxo de escuta mais focado.', tryTool:'Testar a ferramenta', backBlogs:'Voltar para BLOGS', settings:'Configurações', theme:'Tema', uiLanguage:'Idioma da interface', defaultLanguage:'Idioma padrão', wordsPerGroup:'Palavras por grupo', repetitions:'Repetições', speed:'Velocidade', pause:'Pausa entre grupos', auto:'Automático' },
+        fr: { navHome:'Accueil', navProjects:'Projets', navBlogs:'BLOGS', navAbout:'À propos', navHelp:'Comment utiliser', navPrivacy:'Confidentialité', navBrowserReader:'Lecteur du navigateur', navPdf:'Lire le PDF', navNotes:'Lire les notes', navStudent:'Outil étudiant', eyebrow:'DICTATOR', title:'Lire les notes à voix haute dans le navigateur', intro:'Améliorez la mémoire et la rétention en écoutant vos notes au lieu de les lire seulement. DICTATOR aide à transformer les idées clés en session de révision parlée.', why:'Pourquoi les gens l’utilisent', reason1:'Collez vos notes de cours ou brouillons dans l’outil.', reason2:'Écoutez en petits groupes ciblés pour améliorer la compréhension.', reason3:'Répétez les passages difficiles sans tout relire manuellement.', how:'Comment ça marche', step1:'Collez ou téléchargez vos notes.', step2:'Choisissez la taille du groupe et le rythme de lecture.', step3:'Écoutez, répétez et révisez avec plus de concentration.', faq:'Questions fréquentes', q1:'Pourquoi lire les notes à voix haute ?', a1:'La lecture à voix haute réduit la fatigue visuelle, améliore la concentration et aide à mémoriser en combinant écoute et répétition.', q2:'Puis-je l’utiliser en déplacement ?', a2:'Oui. Il est conçu pour de courtes sessions de révision dans le navigateur et peut être utile sur téléphone ou tablette.', q3:'Quels types de notes fonctionnent bien ?', a3:'Les notes de cours, résumés, scripts de révision, rappels personnels et passages de lecture fonctionnent très bien.', startTitle:'Commencez à lire aujourd’hui', startCopy:'Utilisez DICTATOR pour transformer notes et matériel d’étude en un flux d’écoute plus concentré.', tryTool:'Essayer l’outil', backBlogs:'Retour aux BLOGS', settings:'Paramètres', theme:'Thème', uiLanguage:'Langue de l’interface', defaultLanguage:'Langue par défaut', wordsPerGroup:'Mots par groupe', repetitions:'Répétitions', speed:'Vitesse', pause:'Pause entre les groupes', auto:'Auto' },
+        es: { navHome:'Inicio', navProjects:'Proyectos', navBlogs:'BLOGS', navAbout:'Acerca de', navHelp:'Cómo usar', navPrivacy:'Privacidad', navBrowserReader:'Lector del navegador', navPdf:'Leer PDF', navNotes:'Leer apuntes', navStudent:'Herramienta del estudiante', eyebrow:'DICTATOR', title:'Leer apuntes en voz alta en el navegador', intro:'Mejora la memoria y la retención escuchando tus apuntes en lugar de leerlos solo. DICTATOR ayuda a convertir ideas clave en una sesión de repaso hablada.', why:'Por qué la gente lo usa', reason1:'Pega tus apuntes de clase o borradores en la herramienta.', reason2:'Escucha en grupos cortos y enfocados para mejorar la comprensión.', reason3:'Repite secciones difíciles sin volver a leerlo todo manualmente.', how:'Cómo funciona', step1:'Pega o sube tus apuntes.', step2:'Elige el tamaño del grupo y el ritmo de lectura.', step3:'Escucha, repite y repasa con más enfoque.', faq:'Preguntas frecuentes', q1:'¿Por qué leer apuntes en voz alta?', a1:'La lectura en voz alta reduce la fatiga visual, mejora el enfoque y ayuda a retener información combinando escucha y repetición.', q2:'¿Puedo usarlo mientras viajo o camino?', a2:'Sí. Está pensado para sesiones rápidas de repaso en el navegador y puede ser útil en teléfonos y tabletas.', q3:'¿Qué tipos de apuntes funcionan bien?', a3:'Apuntes de clase, resúmenes, guiones de repaso, recordatorios personales y pasajes de lectura funcionan muy bien.', startTitle:'Empieza a leer hoy', startCopy:'Usa DICTATOR para convertir notas y material de estudio en un flujo de escucha más enfocado.', tryTool:'Probar la herramienta', backBlogs:'Volver a BLOGS', settings:'Ajustes', theme:'Tema', uiLanguage:'Idioma de la interfaz', defaultLanguage:'Idioma predeterminado', wordsPerGroup:'Palabras por grupo', repetitions:'Repeticiones', speed:'Velocidad', pause:'Pausa entre grupos', auto:'Automático' },
+        de: { navHome:'Start', navProjects:'Projekte', navBlogs:'BLOGS', navAbout:'Über uns', navHelp:'Anleitung', navPrivacy:'Datenschutz', navBrowserReader:'Browser-Leser', navPdf:'PDF lesen', navNotes:'Notizen lesen', navStudent:'Studenten-Tool', eyebrow:'DICTATOR', title:'Notizen im Browser laut vorlesen', intro:'Verbessere Gedächtnis und Erinnerung, indem du deine Notizen hörst statt nur liest. DICTATOR hilft dir, wichtige Ideen in eine gesprochene Wiederholungssitzung zu verwandeln.', why:'Warum Menschen es nutzen', reason1:'Kopiere deine Kursnotizen oder Entwürfe in das Tool.', reason2:'Höre in kurzen, fokussierten Gruppen, um das Verständnis zu verbessern.', reason3:'Wiederhole schwierige Abschnitte, ohne alles manuell neu zu lesen.', how:'So funktioniert es', step1:'Füge deine Notizen ein oder lade sie hoch.', step2:'Wähle Gruppengröße und Lesetempo.', step3:'Höre zu, wiederhole und überarbeite mit mehr Fokus.', faq:'Häufig gestellte Fragen', q1:'Warum Notizen laut vorlesen?', a1:'Das laute Vorlesen reduziert visuelle Ermüdung, verbessert die Konzentration und hilft beim Behalten durch Kombination von Hören und Wiederholen.', q2:'Kann ich es beim Pendeln oder Gehen nutzen?', a2:'Ja. Es ist für kurze Wiederholungssitzungen im Browser gedacht und kann besonders auf Smartphones und Tablets hilfreich sein.', q3:'Welche Arten von Notizen funktionieren gut?', a3:'Kursnotizen, Zusammenfassungen, Wiederholungsmanuskripte, persönliche Erinnerungen und Lesetexte funktionieren gut.', startTitle:'Heute anfangen zu lesen', startCopy:'Nutze DICTATOR, um Notizen und Lernmaterial in einen fokussierteren Hörfluss zu verwandeln.', tryTool:'Tool testen', backBlogs:'Zurück zu BLOGS', settings:'Einstellungen', theme:'Thema', uiLanguage:'Sprache der Oberfläche', defaultLanguage:'Standardsprache', wordsPerGroup:'Wörter pro Gruppe', repetitions:'Wiederholungen', speed:'Geschwindigkeit', pause:'Pause zwischen Gruppen', auto:'Automatisch' },
+        it: { navHome:'Home', navProjects:'Progetti', navBlogs:'BLOGS', navAbout:'Informazioni', navHelp:'Come usare', navPrivacy:'Privacy', navBrowserReader:'Lettore del browser', navPdf:'Leggi PDF', navNotes:'Leggi appunti', navStudent:'Strumento studenti', eyebrow:'DICTATOR', title:'Leggi appunti a voce alta nel browser', intro:'Migliora memoria e ritenzione ascoltando i tuoi appunti invece di leggerli solo. DICTATOR aiuta a trasformare le idee chiave in una sessione di ripasso parlata.', why:'Perché le persone lo usano', reason1:'Incolla i tuoi appunti di lezione o bozze nello strumento.', reason2:'Ascolta in gruppi brevi e mirati per migliorare la comprensione.', reason3:'Ripeti le sezioni difficili senza rileggere tutto manualmente.', how:'Come funziona', step1:'Incolla o carica i tuoi appunti.', step2:'Scegli la dimensione del gruppo e il ritmo di lettura.', step3:'Ascolta, ripeti e ripassa con più concentrazione.', faq:'Domande frequenti', q1:'Perché leggere gli appunti a voce alta?', a1:'La lettura a voce alta riduce la fatica visiva, migliora la concentrazione e aiuta a trattenere le informazioni combinando ascolto e ripetizione.', q2:'Posso usarlo mentre viaggio o cammino?', a2:'Sì. È stato progettato per sessioni brevi di ripasso nel browser e può essere utile su telefoni e tablet.', q3:'Che tipi di appunti funzionano bene?', a3:'Appunti di lezione, riassunti, script di ripasso, promemoria personali e passaggi di lettura funzionano bene.', startTitle:'Inizia a leggere oggi', startCopy:'Usa DICTATOR per trasformare note e materiale di studio in un flusso di ascolto più concentrato.', tryTool:'Prova lo strumento', backBlogs:'Torna a BLOGS', settings:'Impostazioni', theme:'Tema', uiLanguage:'Lingua dell’interfaccia', defaultLanguage:'Lingua predefinita', wordsPerGroup:'Parole per gruppo', repetitions:'Ripetizioni', speed:'Velocità', pause:'Pausa tra i gruppi', auto:'Automatico' },
+        ru: { navHome:'Главная', navProjects:'Проекты', navBlogs:'BLOGS', navAbout:'О проекте', navHelp:'Как пользоваться', navPrivacy:'Конфиденциальность', navBrowserReader:'Браузерный читатель', navPdf:'Читать PDF', navNotes:'Читать заметки', navStudent:'Студенческий инструмент', eyebrow:'DICTATOR', title:'Читать заметки вслух в браузере', intro:'Улучшайте память и удержание, слушая заметки вместо того, чтобы только читать их. DICTATOR помогает превратить ключевые идеи в организованную сессию повторения.', why:'Почему люди используют', reason1:'Вставляйте лекционные заметки или черновики в инструмент.', reason2:'Слушайте в коротких, сфокусированных группах, чтобы улучшить понимание.', reason3:'Повторяйте сложные разделы без ручного перечитывания всего.', how:'Как это работает', step1:'Вставьте или загрузите свои заметки.', step2:'Выберите размер группы и темп чтения.', step3:'Слушайте, повторяйте и пересматривайте с большей концентрацией.', faq:'Часто задаваемые вопросы', q1:'Зачем читать заметки вслух?', a1:'Чтение вслух снижает визуальную усталость, улучшает концентрацию и помогает запоминать информацию через сочетание прослушивания и повторения.', q2:'Можно ли использовать во время поездок или прогулок?', a2:'Да. Инструмент рассчитан на быстрые сессии повторения в браузере и особенно полезен на телефонах и планшетах.', q3:'Какие заметки работают лучше всего?', a3:'Лекционные заметки, конспекты, сценарии повторения, личные напоминания и тексты для чтения работают хорошо.', startTitle:'Начните читать сегодня', startCopy:'Используйте DICTATOR, чтобы превращать заметки и учебный материал в более сфокусированный поток прослушивания.', tryTool:'Попробовать инструмент', backBlogs:'Назад к BLOGS', settings:'Настройки', theme:'Тема', uiLanguage:'Язык интерфейса', defaultLanguage:'Язык по умолчанию', wordsPerGroup:'Слов в группе', repetitions:'Повторы', speed:'Скорость', pause:'Пауза между группами', auto:'Авто' }
+      };
+      function getSettings() { try { return { ...defaults, ...JSON.parse(localStorage.getItem('dictator_settings') || '{}') }; } catch { return { ...defaults }; } }
+      function getSystemUiLanguage() { const browser = (navigator.language || navigator.languages?.[0] || 'en').toLowerCase(); const key = browser.split('-')[0]; return ['pt','en','fr','es','de','it','ru'].includes(key) ? key : 'en'; }
+      function resolveUiLanguage(value='auto') { const saved = (value || 'auto').toLowerCase(); return saved === 'auto' ? getSystemUiLanguage() : ['pt','en','fr','es','de','it','ru'].includes(saved) ? saved : 'en'; }
+      function applyLanguage() {
+        const uiLanguage = resolveUiLanguage(getSettings().uiLanguage);
+        const copy = translations[uiLanguage] || translations.en;
+        document.querySelectorAll('[data-i18n]').forEach((node) => { const key = node.getAttribute('data-i18n'); if (copy[key]) node.textContent = copy[key]; });
+        document.querySelector('#page-menu .panel-header strong').textContent = copy.navTitle || 'Navigate';
+        document.querySelector('#settings-panel .panel-header strong').textContent = copy.settings || 'Settings';
+        const themeLabel = document.querySelector('#setting-theme').closest('label'); if (themeLabel) themeLabel.childNodes[0].nodeValue = `${copy.theme || 'Theme'} `;
+        const uiLabel = document.querySelector('#ui-language').closest('label'); if (uiLabel) uiLabel.childNodes[0].nodeValue = `${copy.uiLanguage || 'UI language'} `;
+        const defaultLabel = document.querySelector('#default-language').closest('label'); if (defaultLabel) defaultLabel.childNodes[0].nodeValue = `${copy.defaultLanguage || 'Default language'} `;
+        const wordsLabel = document.querySelector('#words-per-group').closest('label'); if (wordsLabel) wordsLabel.childNodes[0].nodeValue = `${copy.wordsPerGroup || 'Words per group'} `;
+        const repsLabel = document.querySelector('#repetitions').closest('label'); if (repsLabel) repsLabel.childNodes[0].nodeValue = `${copy.repetitions || 'Repetitions'} `;
+        const speedLabel = document.querySelector('#speed-range').closest('label'); if (speedLabel) speedLabel.childNodes[0].nodeValue = `${copy.speed || 'Speed'} `;
+        const pauseLabel = document.querySelector('#pause-range').closest('label'); if (pauseLabel) pauseLabel.childNodes[0].nodeValue = `${copy.pause || 'Pause between groups'} `;
+        document.querySelectorAll('#ui-language option, #default-language option').forEach((option) => { if (option.value === 'auto') option.textContent = copy.auto || 'Auto'; });
+      }
+      function setTheme(theme) {
+        const dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        root.dataset.theme = dark ? 'dark' : 'light';
+        if (themeSelect) themeSelect.value = theme;
+        if (themeToggle) themeToggle.textContent = dark ? '☀' : '☾';
+        const settings = getSettings(); settings.theme = theme; localStorage.setItem('dictator_settings', JSON.stringify(settings));
+      }
+      function openPanel(panel) {
+        pageMenu.classList.toggle('open', panel === pageMenu);
+        settingsPanel.classList.toggle('open', panel === settingsPanel);
+        scrim.hidden = !(pageMenu.classList.contains('open') || settingsPanel.classList.contains('open'));
+        pageMenu.setAttribute('aria-hidden', String(!pageMenu.classList.contains('open')));
+        settingsPanel.setAttribute('aria-hidden', String(!settingsPanel.classList.contains('open')));
+      }
+      function syncSettingsUi() {
+        const settings = getSettings();
+        if (uiSelect) uiSelect.value = settings.uiLanguage || 'auto';
+        if (defaultSelect) defaultSelect.value = settings.defaultDictationLang || 'auto';
+        if (wordsSelect) wordsSelect.value = String(settings.defaultWordsPerGroup || 6);
+        if (repsSelect) repsSelect.value = String(settings.defaultRepetitions || 2);
+        if (speedRange) { speedRange.value = String(settings.defaultSpeed || 0.9); speedValue.value = String(settings.defaultSpeed || 0.9); }
+        if (pauseRange) { pauseRange.value = String(settings.defaultPauseDuration || 0.8); pauseValue.value = String(settings.defaultPauseDuration || 0.8); }
+        if (themeSelect) themeSelect.value = settings.theme || 'system';
+      }
+      function saveSettings() {
+        const settings = getSettings();
+        settings.uiLanguage = uiSelect ? uiSelect.value : 'auto';
+        settings.defaultDictationLang = defaultSelect ? defaultSelect.value : 'auto';
+        settings.defaultWordsPerGroup = Number(wordsSelect?.value || settings.defaultWordsPerGroup || 6);
+        settings.defaultRepetitions = Number(repsSelect?.value || settings.defaultRepetitions || 2);
+        settings.defaultSpeed = Number(speedRange?.value || settings.defaultSpeed || 0.9);
+        settings.defaultPauseDuration = Number(pauseRange?.value || settings.defaultPauseDuration || 0.8);
+        settings.theme = themeSelect ? themeSelect.value : settings.theme || 'system';
+        localStorage.setItem('dictator_settings', JSON.stringify(settings));
+        applyLanguage();
+        setTheme(settings.theme);
+      }
+      document.querySelector('#menu-toggle').addEventListener('click', () => openPanel(pageMenu));
+      document.querySelector('#settings-toggle').addEventListener('click', () => openPanel(settingsPanel));
+      document.querySelector('#scrim').addEventListener('click', () => openPanel(null));
+      document.querySelector('#home-link').addEventListener('click', () => { window.location.href = '/'; });
+      document.querySelectorAll('[data-close]').forEach((button) => button.addEventListener('click', () => openPanel(null)));
+      document.querySelectorAll('[data-route]').forEach((button) => { button.addEventListener('click', () => { const route = button.getAttribute('data-route'); if (route) window.location.href = route; }); });
+      document.querySelectorAll('.faq-question').forEach((button) => { button.addEventListener('click', () => { button.parentElement.classList.toggle('open'); }); });
+      if (uiSelect) uiSelect.addEventListener('change', saveSettings);
+      if (defaultSelect) defaultSelect.addEventListener('change', saveSettings);
+      if (wordsSelect) wordsSelect.addEventListener('change', saveSettings);
+      if (repsSelect) repsSelect.addEventListener('change', saveSettings);
+      if (speedRange) { speedRange.addEventListener('input', () => { speedValue.value = speedRange.value; saveSettings(); }); speedValue.addEventListener('input', () => { speedRange.value = speedValue.value; saveSettings(); }); }
+      if (pauseRange) { pauseRange.addEventListener('input', () => { pauseValue.value = pauseRange.value; saveSettings(); }); pauseValue.addEventListener('input', () => { pauseRange.value = pauseValue.value; saveSettings(); }); }
+      if (themeSelect) themeSelect.addEventListener('change', (event) => { setTheme(event.target.value); });
+      if (themeToggle) themeToggle.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+      syncSettingsUi();
+      applyLanguage();
+      setTheme(getSettings().theme || 'system');
+    })();
+  </script>
+</body>
+</html>
