@@ -122,9 +122,11 @@ The public UI supports English (`en`), Portuguese (`pt`), French (`fr`), Spanish
 
 An explicit locale in the URL takes precedence over the saved `localStorage` preference. Legacy links such as `?lang=pt` are normalized to the equivalent locale path. Localhost and GitHub Pages keep the hash routing policy, so the same routes use forms such as `/#/pt/blogs` and `/DICTATOR/#/pt/blogs` there.
 
-The runtime updates `<html lang>`, page metadata, canonical URLs, and `hreflang` annotations for the active locale. The indexed production source of truth should be the Cloudflare/custom-domain locale paths after deployment. The current static page templates still provide English fallback HTML before JavaScript runs; fully authored localized static copies should be added before claiming maximum multilingual crawlability.
+The runtime updates `<html lang>`, page metadata, canonical URLs, Open Graph data, Twitter data, FAQ structured data, and `hreflang` annotations for the active locale. The indexed production source of truth should be the Cloudflare/custom-domain locale paths after deployment. Every supported locale has static landing and blog entry pages with localized SEO metadata and content; those pages bootstrap the same application shell as the English root so direct visits receive the full header, navigation, settings, editor, upload controls, and reader UI rather than a separate basic HTML experience.
 
-The language selector writes the selected locale into the URL while preserving the current page. An explicit URL locale wins over the saved UI preference. On localhost and GitHub Pages the locale is part of the hash route, while Cloudflare/custom domains use the clean locale path.
+The language selector writes the selected locale into the URL while preserving the current page. An explicit URL locale wins over the saved UI preference. Blog index cards, article calls to action, home SEO links, and navigation links are generated through the router so changing language never sends the visitor back to an English blog URL. On localhost and GitHub Pages the locale is part of the hash route, while Cloudflare/custom domains use the clean locale path.
+
+Localized static entry pages fetch the current root shell with a versioned cache key, preserve the requested locale and route in the URL, and then let `router.js`, `ui.js`, and `app.js` render the interactive application. When changing browser-loaded JavaScript, increment the script query-string version in `index.html` and the static shell loaders so deployed pages do not execute stale routing or translation code.
 
 ## Hosting Configuration
 
@@ -195,7 +197,7 @@ The public SEO files complement the runtime metadata:
 - `robots.txt` permits crawling and points crawlers to the sitemap.
 - `index.html` contains WebApplication structured data and social metadata.
 
-The application interface and blog content support seven locales: English (`en`), Portuguese (`pt`), French (`fr`), Spanish (`es`), German (`de`), Italian (`it`), and Russian (`ru`). The sitemap includes the public localized Home, Blogs, and blog-page URL matrix. Private project and edit routes are not included as localized SEO pages.
+The application interface and blog content support seven locales: English (`en`), Portuguese (`pt`), French (`fr`), Spanish (`es`), German (`de`), Italian (`it`), and Russian (`ru`). Each locale has localized Home, Blogs, and all four blog-page entry points, with locale-aware internal links and route metadata. The sitemap includes the public localized Home, Blogs, and blog-page URL matrix. Private project and edit routes are not included as localized SEO pages.
 
 ## Main User Workflow
 
@@ -313,7 +315,7 @@ Then verify:
 3. A GitHub Pages deep link is recovered through `404.html`.
 4. A Cloudflare clean route is rewritten to `index.html` and renders correctly after reload.
 5. A legacy Cloudflare hash URL is converted to a clean URL.
-6. Blog routes, canonical metadata, FAQ schema, sitemap entries, and localized copy are present.
+6. Blog routes preserve the active locale, canonical metadata and `hreflang` values match that locale, FAQ schema is present, sitemap entries exist, and localized copy is rendered.
 7. TXT, PDF, and DOCX imports work when their external libraries can load.
 8. The demo speaks with symbols, punctuation, repetition, group pauses, and all supported speech languages.
 9. Settings, drafts, projects, themes, and voice preferences persist after reload.
