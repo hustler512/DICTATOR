@@ -427,7 +427,9 @@ window.Router = (() => {
 
     const canonical = document.head.querySelector('link[rel="canonical"]') || document.createElement('link');
     canonical.rel = 'canonical';
-    const canonicalPath = normalizePublicPath(localePath(meta.canonicalPath, locale));
+    const canonicalPath = meta.canonicalPath === '/' && locale !== 'en'
+      ? `/${locale}/`
+      : normalizePublicPath(localePath(meta.canonicalPath, locale));
     canonical.href = `${ROUTER_PUBLIC_ORIGIN}${canonicalPath}`;
     if (!canonical.parentNode) document.head.appendChild(canonical);
 
@@ -435,7 +437,7 @@ window.Router = (() => {
     ogUrl.setAttribute('property', 'og:url');
     ogUrl.setAttribute('content', `${ROUTER_PUBLIC_ORIGIN}${canonicalPath}`);
     if (!ogUrl.parentNode) document.head.appendChild(ogUrl);
-    document.head.querySelectorAll('link[data-hreflang="dictate"]').forEach(link => link.remove());
+    document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(link => link.remove());
     ROUTER_LANGUAGES.forEach(language => {
       const alternate = document.createElement('link');
       alternate.rel = 'alternate';
