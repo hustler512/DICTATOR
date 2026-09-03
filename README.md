@@ -94,8 +94,8 @@ Hash routes do not require the server to understand SPA paths. Reloading a route
 On Cloudflare Pages and other non-local, non-GitHub hosts, navigation uses clean paths:
 
 ```text
-https://dictator.app/projects
-https://dictator.app/blogs/read-pdf-aloud-online
+https://hustler512.github.io/DICTATOR/#/projects
+https://hustler512.github.io/DICTATOR/#/blogs/read-pdf-aloud-online
 ```
 
 When a visitor arrives with a legacy hash URL such as `#/projects`, the router automatically replaces it with `/projects` on a clean-URL host. This keeps the final deployment canonical and removes the hash from the address bar.
@@ -111,6 +111,8 @@ The URL mode is selected by `router.js`:
 The browser router cannot by itself prevent a server from returning a 404 before JavaScript loads. The hosting fallback files are therefore part of the routing design.
 
 ### Language-aware public URLs
+
+The current canonical deployment is GitHub Pages at `https://hustler512.github.io/DICTATOR/`. The `dictator.app` domain is not configured for this project, so it must not be used in canonical tags, sitemap entries, robots directives, or social metadata until it is actually connected to the deployment.
 
 The public UI supports English (`en`), Portuguese (`pt`), French (`fr`), Spanish (`es`), German (`de`), Italian (`it`), and Russian (`ru`). On the canonical clean-URL host, locale paths are supported for shareable language pages:
 
