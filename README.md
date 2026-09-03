@@ -1,6 +1,6 @@
-# DICTATOR
+# DICTATE
 
-DICTATOR is a private, browser-first text-to-speech and study application. Paste notes, import a document, or create a listening project, then review the material in small spoken groups with adjustable speed, repetition, language, and pauses.
+DICTATE is a private, browser-first text-to-speech and study application. Paste notes, import a document, or create a listening project, then review the material in small spoken groups with adjustable speed, repetition, language, and pauses.
 
 The project is a static web application. It has no application backend, accounts, build pipeline, or required installation. Projects and settings stay in the browser unless an optional external parser or speech fallback is used.
 
@@ -76,7 +76,7 @@ An HTTP origin is recommended over opening the file directly because browser sec
 
 ## Dual URL Routing
 
-DICTATOR intentionally supports two URL modes so it is usable on hosts with different static-file behavior.
+DICTATE intentionally supports two URL modes so it is usable on hosts with different static-file behavior.
 
 ### Localhost and GitHub Pages: hash URLs
 
@@ -109,6 +109,22 @@ The URL mode is selected by `router.js`:
 - All modes render the same UI and route names.
 
 The browser router cannot by itself prevent a server from returning a 404 before JavaScript loads. The hosting fallback files are therefore part of the routing design.
+
+### Language-aware public URLs
+
+The public UI supports English (`en`), Portuguese (`pt`), French (`fr`), Spanish (`es`), German (`de`), Italian (`it`), and Russian (`ru`). On the canonical clean-URL host, locale paths are supported for shareable language pages:
+
+```text
+/pt/
+/es/blogs
+/fr/blogs/read-notes-aloud
+```
+
+An explicit locale in the URL takes precedence over the saved `localStorage` preference. Legacy links such as `?lang=pt` are normalized to the equivalent locale path. Localhost and GitHub Pages keep the hash routing policy, so the same routes use forms such as `/#/pt/blogs` and `/DICTATOR/#/pt/blogs` there.
+
+The runtime updates `<html lang>`, page metadata, canonical URLs, and `hreflang` annotations for the active locale. The indexed production source of truth should be the Cloudflare/custom-domain locale paths after deployment. The current static page templates still provide English fallback HTML before JavaScript runs; fully authored localized static copies should be added before claiming maximum multilingual crawlability.
+
+The language selector writes the selected locale into the URL while preserving the current page. An explicit URL locale wins over the saved UI preference. On localhost and GitHub Pages the locale is part of the hash route, while Cloudflare/custom domains use the clean locale path.
 
 ## Hosting Configuration
 
@@ -152,15 +168,17 @@ The application supports these route names:
 | `/project/<id>` | Reader for a saved project or the demo project |
 | `/edit/<id>` | Edit a saved project through the Home editor |
 | `/blogs` | Blog and product-guide index |
-| `/blogs/browser-text-to-speech-reader` | Browser text-to-speech reader guide |
-| `/blogs/read-pdf-aloud-online` | PDF listening guide |
-| `/blogs/read-notes-aloud` | Note-listening and revision guide |
-| `/blogs/student-dictation-tool` | Student dictation and study guide |
+| `/blogs/browser-text-to-speech-reader` | Canonical browser text-to-speech reader guide |
+| `/blogs/read-pdf-aloud-online` | Canonical PDF listening guide |
+| `/blogs/read-notes-aloud` | Canonical note-listening and revision guide |
+| `/blogs/student-dictation-tool` | Canonical student dictation and study guide |
 | `/about` | Product purpose and local-first design |
 | `/how-to-use` | Workflow instructions and FAQ content |
 | `/privacy` | Storage, network, and privacy explanation |
 
 The four blog pages are SEO-oriented product pages, not placeholder articles. Each has a localized title, introduction, use cases, workflow, FAQ section, and call to the main tool. The blog index links to all four pages.
+
+The legacy root topic paths `/browser-text-to-speech-reader`, `/read-pdf-aloud-online`, `/read-notes-aloud`, and `/student-dictation-tool` redirect to their matching `/blogs/...` pages. This prevents duplicate SEO pages while preserving old links.
 
 The router updates document metadata for the active route, including:
 
@@ -177,7 +195,7 @@ The public SEO files complement the runtime metadata:
 - `robots.txt` permits crawling and points crawlers to the sitemap.
 - `index.html` contains WebApplication structured data and social metadata.
 
-The application interface and blog content support seven locales: English (`en`), Portuguese (`pt`), French (`fr`), Spanish (`es`), German (`de`), Italian (`it`), and Russian (`ru`).
+The application interface and blog content support seven locales: English (`en`), Portuguese (`pt`), French (`fr`), Spanish (`es`), German (`de`), Italian (`it`), and Russian (`ru`). The sitemap includes the public localized Home, Blogs, and blog-page URL matrix. Private project and edit routes are not included as localized SEO pages.
 
 ## Main User Workflow
 
@@ -241,7 +259,7 @@ The visible text, tokens, structure, groups, progress, source metadata, image da
 
 ## Privacy and Network Model
 
-Normal project creation, storage, and browser speech happen on the user's device. DICTATOR has no application server and does not require an account.
+Normal project creation, storage, and browser speech happen on the user's device. DICTATE has no application server and does not require an account.
 
 Network requests may occur when:
 

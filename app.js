@@ -131,7 +131,16 @@
     const code = browserLanguage.split('-')[0];
     return uiLanguageOptions.includes(code) ? code : 'en';
   }
+  function getUrlUiLanguage() {
+    const queryLanguage = new URLSearchParams(location.search).get('lang')?.toLowerCase();
+    if (uiLanguageOptions.includes(queryLanguage)) return queryLanguage;
+    const source = location.hash.startsWith('#/') ? location.hash.slice(2) : location.pathname.replace(/^\/+/, '');
+    const pathLanguage = source.split('/')[0]?.toLowerCase();
+    return uiLanguageOptions.includes(pathLanguage) ? pathLanguage : null;
+  }
   function resolveUiLanguage(value) {
+    const urlLanguage = getUrlUiLanguage();
+    if (urlLanguage) return urlLanguage;
     const saved = (value || 'auto').toLowerCase();
     if (saved === 'auto') return getSystemUiLanguage();
     return uiLanguageOptions.includes(saved) ? saved : 'en';
@@ -143,7 +152,7 @@
   function t(key, fallback = key) {
     return currentUiText()[key] || UI_TEXT.en[key] || fallback;
   }
-  window.DictatorI18n = { t, resolveUiLanguage, getSystemUiLanguage, options: uiLanguageOptions };
+  window.DictateI18n = { t, resolveUiLanguage, getSystemUiLanguage, getUrlUiLanguage, options: uiLanguageOptions };
   function applyTheme(theme) { const dark=theme==='dark'||(theme==='system'&&matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.dataset.theme=dark?'dark':'light'; document.querySelector('#theme-toggle').textContent=dark?'☀':'☾'; }
   function applyUiLanguage() {
     const language = resolveUiLanguage(getSettings().uiLanguage);
@@ -169,7 +178,7 @@
     const next = getSettings();
     next.uiLanguage = event.target.value;
     localStorage.setItem(settingsKey, JSON.stringify(next));
-    window.location.reload();
+    Router.setLanguage(next.uiLanguage);
   });
   renderPauseSetting();
 })();

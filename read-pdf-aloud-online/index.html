@@ -3,14 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Read PDF Aloud Online | DICTATOR</title>
+  <title>Read PDF Aloud Online | DICTATE</title>
   <meta name="description" content="Read PDF aloud online with a private browser-based tool that turns text-heavy documents into spoken audio for study and review.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://dictator.app/read-pdf-aloud-online">
-  <meta property="og:title" content="Read PDF Aloud Online | DICTATOR">
+  <link rel="canonical" href="https://dictator.app/blogs/read-pdf-aloud-online">
+  <script>
+    (() => {
+      const target = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+        ? '/#/blogs/read-pdf-aloud-online'
+        : location.hostname.endsWith('.github.io')
+          ? '/DICTATOR/#/blogs/read-pdf-aloud-online'
+          : '/blogs/read-pdf-aloud-online';
+      location.replace(target);
+    })();
+  </script>
+  <meta property="og:title" content="Read PDF Aloud Online | DICTATE">
   <meta property="og:description" content="Upload a PDF or document and listen to it aloud in your browser with a focused reading workflow.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://dictator.app/read-pdf-aloud-online">
+  <meta property="og:url" content="https://dictator.app/blogs/read-pdf-aloud-online">
   <meta name="twitter:card" content="summary_large_image">
   <style>
     body { margin:0; font-family: Arial, sans-serif; background:#0f1720; color:#ecf3f7; line-height:1.7; }
@@ -28,10 +38,10 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="eyebrow">DICTATOR</div>
+    <div class="eyebrow">DICTATE</div>
     <h1>Read PDF Aloud Online</h1>
     <div class="card">
-      <p>Reading a PDF aloud online helps you review dense material without spending hours staring at the screen. DICTATOR turns document text into spoken audio for more comfortable revision and study sessions.</p>
+      <p>Reading a PDF aloud online helps you review dense material without spending hours staring at the screen. DICTATE turns document text into spoken audio for more comfortable revision and study sessions.</p>
       <p><a class="cta" href="/">Try the tool</a></p>
       <h2>Who this helps</h2>
       <ul>
@@ -41,7 +51,7 @@
       </ul>
       <h2>How it works</h2>
       <ol>
-        <li>Open DICTATOR and upload your PDF or DOCX file.</li>
+        <li>Open DICTATE and upload your PDF or DOCX file.</li>
         <li>Choose your speech pace, grouping, and language.</li>
         <li>Listen while you review the material in manageable chunks.</li>
       </ol>
@@ -57,7 +67,7 @@
         </div>
         <div class="faq-item">
           <h3>Is it private?</h3>
-          <p>DICTATOR keeps the process browser-first and local-first so the reading experience can stay focused on your device.</p>
+          <p>DICTATE keeps the process browser-first and local-first so the reading experience can stay focused on your device.</p>
         </div>
       </div>
     </div>

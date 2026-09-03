@@ -3,14 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Browser Text to Speech Reader | DICTATOR</title>
+  <title>Browser Text to Speech Reader | DICTATE</title>
   <meta name="description" content="Use a browser text to speech reader to turn notes, study material, and documents into spoken audio without uploading your files.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://dictator.app/browser-text-to-speech-reader">
-  <meta property="og:title" content="Browser Text to Speech Reader | DICTATOR">
+  <link rel="canonical" href="https://dictator.app/blogs/browser-text-to-speech-reader">
+  <script>
+    (() => {
+      const target = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+        ? '/#/blogs/browser-text-to-speech-reader'
+        : location.hostname.endsWith('.github.io')
+          ? '/DICTATOR/#/blogs/browser-text-to-speech-reader'
+          : '/blogs/browser-text-to-speech-reader';
+      location.replace(target);
+    })();
+  </script>
+  <meta property="og:title" content="Browser Text to Speech Reader | DICTATE">
   <meta property="og:description" content="Read notes, articles, and study material aloud in your browser with a private text-to-speech reader built for revision and focus.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://dictator.app/browser-text-to-speech-reader">
+  <meta property="og:url" content="https://dictator.app/blogs/browser-text-to-speech-reader">
   <meta name="twitter:card" content="summary_large_image">
   <style>
     body { margin:0; font-family: Arial, sans-serif; background:#0f1720; color:#ecf3f7; line-height:1.7; }
@@ -29,7 +39,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="eyebrow">DICTATOR</div>
+    <div class="eyebrow">DICTATE</div>
     <h1>Browser Text to Speech Reader</h1>
     <div class="card">
       <p>Use a browser text to speech reader to turn notes, study material, and digital documents into spoken audio. It keeps your reading workflow simple, private, and focused in one place.</p>

@@ -3,14 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dictation Tool | DICTATOR</title>
+  <title>Student Dictation Tool | DICTATE</title>
   <meta name="description" content="A student-friendly dictation and listening tool for notes, essays, and revision material that works entirely in the browser.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://dictator.app/student-dictation-tool">
-  <meta property="og:title" content="Student Dictation Tool | DICTATOR">
+  <link rel="canonical" href="https://dictator.app/blogs/student-dictation-tool">
+  <script>
+    (() => {
+      const target = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+        ? '/#/blogs/student-dictation-tool'
+        : location.hostname.endsWith('.github.io')
+          ? '/DICTATOR/#/blogs/student-dictation-tool'
+          : '/blogs/student-dictation-tool';
+      location.replace(target);
+    })();
+  </script>
+  <meta property="og:title" content="Student Dictation Tool | DICTATE">
   <meta property="og:description" content="Use a student dictation tool to revise notes by ear, improve focus, and listen back to study material in a browser-based workflow.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://dictator.app/student-dictation-tool">
+  <meta property="og:url" content="https://dictator.app/blogs/student-dictation-tool">
   <meta name="twitter:card" content="summary_large_image">
   <style>
     body { margin:0; font-family: Arial, sans-serif; background:#0f1720; color:#ecf3f7; line-height:1.7; }
@@ -28,10 +38,10 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="eyebrow">DICTATOR</div>
+    <div class="eyebrow">DICTATE</div>
     <h1>Student Dictation Tool</h1>
     <div class="card">
-      <p>DICTATOR is built to help students revise by ear instead of only reading by eye. It turns notes, study summaries, and essays into a listening session so revision feels calmer and more manageable.</p>
+      <p>DICTATE is built to help students revise by ear instead of only reading by eye. It turns notes, study summaries, and essays into a listening session so revision feels calmer and more manageable.</p>
       <p><a class="cta" href="/">Try the tool</a></p>
       <h2>Best for</h2>
       <ul>

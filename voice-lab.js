@@ -28,7 +28,7 @@
     it: ['Laboratorio voce', 'Scegli e ascolta l’anteprima della voce più chiara disponibile per ogni lingua.', 'Lingua di prova', 'Voce', 'Anteprima', 'Aggiorna voci', 'voci compatibili trovate.', 'Questo browser non offre una voce {lang}. Installane una nel sistema operativo e aggiorna.', 'Voce salvata per le sessioni future.', 'Nessuna anteprima in {lang} disponibile.'],
     ru: ['Голосовая лаборатория', 'Выберите и прослушайте наиболее чистый голос для каждого языка.', 'Язык проверки', 'Голос', 'Прослушать', 'Обновить голоса', 'совместимых голосов найдено.', 'В этом браузере нет голоса {lang}. Установите его в операционной системе и обновите список.', 'Голос сохранён для будущих сессий.', 'Предпросмотр на языке {lang} недоступен.']
   };
-  const copy = () => labels[window.DictatorI18n?.resolveUiLanguage?.(getSettings().uiLanguage || 'auto') || 'en'] || labels.en;
+  const copy = () => labels[window.DictateI18n?.resolveUiLanguage?.(getSettings().uiLanguage || 'auto') || 'en'] || labels.en;
   const text = (template, lang) => template.replace('{lang}', lang.toUpperCase());
 
   const getSettings = () => { try { return JSON.parse(localStorage.getItem(settingsKey) || '{}'); } catch { return {}; } };
