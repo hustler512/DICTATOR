@@ -97,5 +97,22 @@ async function listProjects(limit = 20) {
   return values.map(normalizeProject).sort((a,b) => b.updatedAt - a.updatedAt).slice(0, limit);
 }
 async function getProjectCount() { const db = await openDB(); return requestPromise(db.transaction(DB_CONFIG.store).objectStore(DB_CONFIG.store).count()); }
+async function exportProjects() {
+  const db = await openDB();
+  const projects = await requestPromise(db.transaction(DB_CONFIG.store).objectStore(DB_CONFIG.store).getAll());
+  return { format: 'dictate-projects', version: 1, exportedAt: new Date().toISOString(), projects: projects.map(compactProject) };
+}
+async function importProjects(backup) {
+  if (!backup || backup.format !== 'dictate-projects' || !Array.isArray(backup.projects)) throw new Error('INVALID_BACKUP');
+  const db = await openDB();
+  const transaction = db.transaction(DB_CONFIG.store, 'readwrite');
+  const store = transaction.objectStore(DB_CONFIG.store);
+  const existingCount = await requestPromise(store.count());
+  const projects = backup.projects.map(normalizeProject).filter(project => project.id && project.rawText);
+  if (existingCount + projects.length > 20) throw new Error('STORAGE_FULL');
+  projects.forEach(project => store.put(compactProject(project)));
+  await transactionPromise(transaction);
+  return projects.length;
+}
 async function getVoiceModel(key) { const db = await openDB(); return requestPromise(db.transaction(DB_CONFIG.voices).objectStore(DB_CONFIG.voices).get(key)); }
 async function saveVoiceModel(model) { const db = await openDB(); const transaction = db.transaction(DB_CONFIG.voices, 'readwrite'); transaction.objectStore(DB_CONFIG.voices).put(model); await transactionPromise(transaction); return model; }

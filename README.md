@@ -16,6 +16,7 @@ The project is a static web application. It has no application backend, accounts
 - Supports a configurable pause of 0 to 3.5 seconds between groups and repetitions.
 - Explains meaningful punctuation, symbols, numbers, times, decimals, and fractions for speech without changing visible text.
 - Saves projects locally in IndexedDB and stores settings and drafts in localStorage.
+- Exports saved projects to a versioned JSON backup and restores valid backups locally.
 - Includes a built-in punctuation and symbol demonstration project.
 - Includes a Voice Lab for testing and selecting available browser voices.
 - Supports light, dark, and system themes.
@@ -227,6 +228,8 @@ Speech preparation includes:
 
 The browser voice controller ranks compatible voices by language, locale, natural-voice hints, local/remote availability, and saved voice preference. Voice lists may arrive asynchronously through `voiceschanged`.
 
+During active browser playback, DICTATE uses a guarded ten-second speech keep-alive to reduce long-reading interruptions in browsers with Web Speech API timeout behavior. The timer runs only while the main reader is playing and is cleared whenever playback is paused, canceled, finished, or replaced.
+
 If a compatible browser voice is unavailable, the optional fallback audio path can request speech from the configured external TTS URL. This requires network access and has different privacy characteristics from local browser speech.
 
 ## Settings and Localization
@@ -258,6 +261,7 @@ The translation registry covers navigation, settings, Home SEO copy, project man
 - Saved projects are normalized when read so older records receive current defaults and derived groups.
 - The application allows up to 20 saved projects.
 - The built-in demo is generated in memory and does not consume the project limit.
+- Projects can be exported from the Projects view as a JSON backup and imported later on the same or another browser. Imported records are validated, normalized, and subject to the 20-project limit; backups do not leave the device unless the user explicitly moves the file.
 
 The visible text, tokens, structure, groups, progress, source metadata, image data, and reader configuration are kept separate so speech improvements do not rewrite the user's content.
 

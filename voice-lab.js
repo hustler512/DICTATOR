@@ -16,7 +16,6 @@
     fr: 'A, B, C. Des mots clairs, des pauses attentives et une lecture facile à comprendre. Nombre 2,5.',
     de: 'A, B, C. Klare Wörter, sorgfältige Pausen und ein leicht verständlicher Text. Zahl 2,5.',
     it: 'A, B, C. Parole chiare, pause attente e una lettura facile da capire. Numero 2,5.',
-    ar: 'أ، ب، ج. كلمات واضحة، وفواصل هادئة، وقراءة سهلة الفهم. الرقم ٢٫٥.',
     ru: 'А, Б, В. Чёткие слова, внимательные паузы и простой для понимания текст. Число 2,5.'
   };
   const labels = {

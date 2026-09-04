@@ -395,7 +395,9 @@ window.Router = (() => {
         ]
       }
     };
-    const mainEntity = (localizedFaqs[localeFromLocation()?.toLowerCase()]?.[routeKey] || faqs[routeKey] || faqs['']).map(item => ({
+    const articleRoutes = ['browser-text-to-speech-reader', 'read-pdf-aloud-online', 'read-notes-aloud', 'student-dictation-tool'];
+    const sharedArticleFaqs = articleRoutes.includes(routeKey) ? ROUTER_UI?.getBlogCopy?.(routeKey)?.faqs : null;
+    const mainEntity = (sharedArticleFaqs || localizedFaqs[localeFromLocation()?.toLowerCase()]?.[routeKey] || faqs[routeKey] || faqs['']).map(item => Array.isArray(item) ? { question: item[0], answer: item[1] } : item).map(item => ({
       '@type': 'Question',
       name: item.question,
       acceptedAnswer: {
@@ -485,7 +487,7 @@ window.Router = (() => {
     const legacyBlogSlugs = ['browser-text-to-speech-reader', 'read-pdf-aloud-online', 'read-notes-aloud', 'student-dictation-tool'];
     if (legacyBlogSlugs.includes(routeKey)) return navigate(`blogs/${routeKey}`);
     if (routeKey !== 'project') window.TTS?.stop();
-    updateMeta(routeKey === 'blogs' ? 'blogs' : blogSlug);
+    updateMeta(routeKey === 'blogs' && !blogSlug ? 'blogs' : blogSlug);
     if (!routeKey) return ROUTER_UI.renderHome();
     if (routeKey === 'blogs' && !blogSlug) return ROUTER_UI.renderBlogs();
     if (routeKey === 'blogs' && blogSlug && ['browser-text-to-speech-reader','read-pdf-aloud-online','read-notes-aloud','student-dictation-tool'].includes(blogSlug)) return ROUTER_UI.renderIntentPage(blogSlug);

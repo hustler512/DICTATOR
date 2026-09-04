@@ -8,6 +8,7 @@ window.TTS = (() => {
   let selectedVoice = null;
   let voiceWaiters = [];
   let fallbackAudio = null;
+  let speechKeepAliveTimer = null;
 
   const PREFERRED_VOICE_PATTERNS = {
     en: [/online.*natural/i, /natural/i, /google us english/i, /samantha/i, /daniel/i, /alex/i],
@@ -123,10 +124,27 @@ window.TTS = (() => {
     speechSynthesis.addEventListener('voiceschanged', () => voiceWaiters.splice(0).forEach(waiter => waiter()));
   }
 
+  function startKeepAlive() {
+    if (speechKeepAliveTimer || !('speechSynthesis' in window)) return;
+    speechKeepAliveTimer = setInterval(() => {
+      if (state === 'playing' && speechSynthesis.speaking && !speechSynthesis.paused) {
+        speechSynthesis.pause();
+        speechSynthesis.resume();
+      }
+    }, 10000);
+  }
+
+  function stopKeepAlive() {
+    if (!speechKeepAliveTimer) return;
+    clearInterval(speechKeepAliveTimer);
+    speechKeepAliveTimer = null;
+  }
+
   function clear() {
     generation += 1;
     clearTimeout(timerId);
     timerId = null;
+    stopKeepAlive();
     if ('speechSynthesis' in window) speechSynthesis.cancel();
     if (fallbackAudio) {
       try { fallbackAudio.pause(); } catch {}
@@ -188,6 +206,7 @@ window.TTS = (() => {
     sync();
     const startedAt = performance.now();
     const units = prepareSpeechUnits(group.rawText, group.hasTitle, group.hasSubtitle, project.config.language);
+    startKeepAlive();
     for (const unit of units) {
       if (currentGeneration !== generation) throw new Error('Playback canceled.');
       if (unit.pauseBefore) await new Promise(resolve => setTimeout(resolve, unit.pauseBefore));
@@ -202,6 +221,7 @@ window.TTS = (() => {
         speechSynthesis.speak(utterance);
       });
     }
+    stopKeepAlive();
     if (currentGeneration === generation) finishSpeech(Math.max(250, performance.now() - startedAt), currentGeneration);
   }
 
