@@ -76,7 +76,7 @@ test('localized loaders use the active index version', async () => {
       if (!entry.isFile() || entry.name !== 'index.html') continue;
       const filePath = path.join(entry.parentPath, entry.name);
       const html = await fs.readFile(filePath, 'utf8');
-      if (html.includes('fetch(')) assert.match(html, /index\.html\?v=31/);
+      if (html.includes('fetch(')) assert.match(html, /index\.html\?v=32/);
     }
   }
 });
@@ -86,4 +86,79 @@ test('localized loaders use the active index version', async () => {
   const app = await fs.readFile(path.join(root, 'app.js'), 'utf8');
   assert.doesNotMatch(ui, /\['en','pt','es','fr','de','it','ar','ru'\]/);
   assert.match(app, /Голосовая лаборатория/);
+});
+
+test('text input uses one enforced word limit', async () => {
+  const ui = await fs.readFile(path.join(root, 'ui.js'), 'utf8');
+  assert.match(ui, /const MAX_WORDS = 5000;/);
+  assert.doesNotMatch(ui, /const MAX_WORDS = Infinity/);
+  assert.doesNotMatch(ui, /maxlength="100000"/);
+  assert.match(ui, /if \(count > MAX_WORDS\)/);
+  assert.match(ui, /if \(count > MAX_WORDS\)[\s\S]*?return count;/);
+  assert.match(ui, /textWordCount\(text\) > MAX_WORDS/);
+});
+
+test('reader rendering keeps fallback navigation and active state efficient', async () => {
+  const ui = await fs.readFile(path.join(root, 'ui.js'), 'utf8');
+  assert.doesNotMatch(ui, /data-index="0"/);
+  assert.match(ui, /const fallbackIndex = Math\.min\(cursor/);
+  assert.match(ui, /let activeReaderGroup = null/);
+  assert.match(ui, /activeReaderGroup\?\.classList\.remove\('active'\)/);
+  assert.doesNotMatch(ui, /document\.querySelectorAll\('\.word-group'\)\.forEach\(node => node\.classList\.toggle\('active'/);
+});
+
+test('shell navigation uses semantic links and clean locale text', async () => {
+  const html = await fs.readFile(path.join(root, 'index.html'), 'utf8');
+  const app = await fs.readFile(path.join(root, 'app.js'), 'utf8');
+  assert.equal((html.match(/<a data-header-route=/g) || []).length, 5);
+  assert.doesNotMatch(app, /document\.querySelectorAll\('\[data-header-route\]'\)\.forEach\(button=>button\.onclick/);
+  assert.match(app, /event\.button===0&&!event\.metaKey&&!event\.ctrlKey&&!event\.shiftKey&&!event\.altKey/);
+  assert.doesNotMatch(app, /Ã|Ð|â/);
+});
+
+test('render lifecycle mounts controls explicitly', async () => {
+  const ui = await fs.readFile(path.join(root, 'ui.js'), 'utf8');
+  assert.doesNotMatch(ui, /new MutationObserver\(\(\) => \{ mountPauseFooter\(\); mountProjectBackupControls\(\); \}\)/);
+  assert.equal((ui.match(/mountProjectBackupControls\(\);/g) || []).length, 1);
+  assert.equal((ui.match(/mountPauseFooter\(\);/g) || []).length, 1);
+});
+
+test('runtime settings readers use the in-memory cache', async () => {
+  const app = await fs.readFile(path.join(root, 'app.js'), 'utf8');
+  const ui = await fs.readFile(path.join(root, 'ui.js'), 'utf8');
+  const voiceLab = await fs.readFile(path.join(root, 'voice-lab.js'), 'utf8');
+  const tts = await fs.readFile(path.join(root, 'tts.js'), 'utf8');
+  assert.match(app, /const settingsState = \(\(\) =>/);
+  assert.match(app, /window\.DictateI18n = \{[\s\S]*getSettings/);
+  assert.match(ui, /window\.DictateI18n\?\.getSettings\?\./);
+  assert.match(voiceLab, /window\.DictateI18n\?\.getSettings\?\./);
+  assert.match(tts, /window\.DictateI18n\?\.getSettings\?\./);
+  assert.doesNotMatch(ui, /JSON\.parse\(localStorage\.getItem\('dictator_settings'\)/);
+  assert.doesNotMatch(voiceLab, /JSON\.parse\(localStorage\.getItem\(settingsKey\)/);
+  assert.doesNotMatch(tts, /JSON\.parse\(localStorage\.getItem\('dictator_settings'\)/);
+});
+
+test('inactive feature paths stay removed without breaking legacy storage', async () => {
+  const ui = await fs.readFile(path.join(root, 'ui.js'), 'utf8');
+  const db = await fs.readFile(path.join(root, 'db.js'), 'utf8');
+  const readme = await fs.readFile(path.join(root, 'README.md'), 'utf8');
+  assert.doesNotMatch(ui, /currentProjectImageData|clearProjectImageSelection/);
+  assert.doesNotMatch(ui, /image:\s*currentProjectImageData/);
+  assert.doesNotMatch(db, /getVoiceModel|saveVoiceModel/);
+  assert.match(db, /voices:\s*'voiceModels'/);
+  assert.doesNotMatch(readme, /piper-worker\.js/);
+});
+
+test('project deletion uses soft-delete and undo retention', async () => {
+  const db = await fs.readFile(path.join(root, 'db.js'), 'utf8');
+  const ui = await fs.readFile(path.join(root, 'ui.js'), 'utf8');
+  assert.match(db, /deletedAt: Number\(project\?\.deletedAt\) \|\| null/);
+  assert.match(db, /updateProject\(id, \{ deletedAt: Date\.now\(\) \}\)/);
+  assert.match(db, /async function restoreProject\(id\)/);
+  assert.match(db, /async function purgeProject\(id\)/);
+  assert.match(db, /filter\(project => !project\.deletedAt\)/);
+  assert.match(ui, /duration:10000/);
+  assert.match(ui, /restoreProject\(projectId\)/);
+  assert.ok((ui.match(/project\.undo/g) || []).length >= 7);
+  assert.ok((ui.match(/project\.restored/g) || []).length >= 7);
 });

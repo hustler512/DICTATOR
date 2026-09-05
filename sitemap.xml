@@ -45,4 +45,22 @@
   <url><loc>https://hustler512.github.io/DICTATOR/about</loc><priority>0.80</priority></url>
   <url><loc>https://hustler512.github.io/DICTATOR/how-to-use</loc><priority>0.70</priority></url>
   <url><loc>https://hustler512.github.io/DICTATOR/privacy</loc><priority>0.65</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/pt/about</loc><priority>0.80</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/pt/how-to-use</loc><priority>0.70</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/pt/privacy</loc><priority>0.65</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/fr/about</loc><priority>0.80</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/fr/how-to-use</loc><priority>0.70</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/fr/privacy</loc><priority>0.65</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/es/about</loc><priority>0.80</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/es/how-to-use</loc><priority>0.70</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/es/privacy</loc><priority>0.65</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/de/about</loc><priority>0.80</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/de/how-to-use</loc><priority>0.70</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/de/privacy</loc><priority>0.65</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/it/about</loc><priority>0.80</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/it/how-to-use</loc><priority>0.70</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/it/privacy</loc><priority>0.65</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/ru/about</loc><priority>0.80</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/ru/how-to-use</loc><priority>0.70</priority></url>
+  <url><loc>https://hustler512.github.io/DICTATOR/ru/privacy</loc><priority>0.65</priority></url>
 </urlset>
